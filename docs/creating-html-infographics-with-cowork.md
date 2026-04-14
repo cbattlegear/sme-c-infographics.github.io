@@ -9,20 +9,27 @@ This guide walks you through using CoWork to generate a self-contained HTML info
 
 ## Steps
 
-### 1. Start a CoWork Session
+### 1. Upload Your Source Content
 
-Open CoWork and begin a new session. Give it context about the infographic you need — for example, the Azure service, the key concepts, and the target audience.
+The best infographics come from **grounded sources** — an existing PowerPoint, PDF, or other content you already have. Starting from real content gives CoWork accurate details to work with and avoids hallucinated information.
+
+1. Open CoWork and start a new session
+2. Click the **+** button in the CoWork client
+3. Select **Upload images and files**
+4. Upload your PowerPoint, PDF, or other source material
 
 ### 2. Prompt for an Infographic
 
-Ask CoWork to generate a single-file HTML infographic. A good prompt includes:
-
-- **Topic** — the service or concept to visualize
-- **Key points** — the 3–6 most important takeaways
-- **Style** — request it follow the Microsoft Fluent / Segoe UI style to stay consistent with the rest of the site
+Reference the uploaded documents in your prompt so CoWork uses them as the basis for the infographic.
 
 > **Example prompt:**
-> "Create a single-file HTML infographic about Azure SQL Managed Instance migration paths. Include sections for assessment, migration options, and post-migration validation. Use Microsoft Fluent design with Segoe UI font."
+> *"Can you take this presentation and instead turn it into an interactive learning html page broken down into well animated infographics that I could send to users?"*
+
+You can also add specifics to steer the output:
+
+- **Style** — request Microsoft Fluent / Segoe UI styling to stay consistent with the site
+- **Sections** — call out specific sections or key points to emphasize
+- **Audience** — mention who will be reading it (e.g., customers, internal team)
 
 ### 3. Review and Refine
 
