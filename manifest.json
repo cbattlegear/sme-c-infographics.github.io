@@ -5,6 +5,10 @@
       {
         "file": "sql-2016-eol-customer-guide.html",
         "title": "SQL Server 2016 End of Support — Your Complete Guide"
+      },
+      {
+        "file": "azure-sql-comparison.html",
+        "title": "Azure SQL Decision Guide"
       }
     ]
   },

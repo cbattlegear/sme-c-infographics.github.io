@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "azure-sql/**"
+      - "azure-databases/**"
       - "fabric/**"
       - "foundry/**"
       - "github-copilot/**"
