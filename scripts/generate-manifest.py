@@ -19,6 +19,7 @@ CATEGORIES = {
     "app-platform-services": "App Platform Services",
     "azure-openai": "Azure OpenAI",
     "defender-for-cloud": "Defender for Cloud",
+    "infrastructure": "Infrastructure"
 }
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

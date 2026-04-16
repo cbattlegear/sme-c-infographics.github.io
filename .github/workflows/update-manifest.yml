@@ -13,6 +13,7 @@ on:
       - "app-platform-services/**"
       - "azure-openai/**"
       - "defender-for-cloud/**"
+      - "infrastructure/**"
       - "scripts/generate-manifest.py"
   workflow_dispatch:
 
