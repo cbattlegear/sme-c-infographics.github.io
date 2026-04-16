@@ -56,6 +56,11 @@
   },
   "infrastructure": {
     "displayName": "Infrastructure",
-    "items": []
+    "items": [
+      {
+        "file": "azure-arc.html",
+        "title": "Azure Arc: The Multi-Cloud Command Center"
+      }
+    ]
   }
 }
