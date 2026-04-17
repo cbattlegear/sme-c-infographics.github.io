@@ -9,8 +9,15 @@ since the tracking script would not have time to load.
 
 Inserts the snippet on its own line immediately before </head>,
 matching the indentation of the </head> line.
+
+Usage:
+    python3 scripts/ensure-tracking.py          # add snippet where missing
+    python3 scripts/ensure-tracking.py --check  # fail (exit 1) if any file
+                                                # is missing the snippet;
+                                                # do not modify files
 """
 
+import argparse
 import os
 import re
 import sys
@@ -39,8 +46,12 @@ def iter_html_files(root: str):
                 yield os.path.join(dirpath, fname)
 
 
-def ensure_snippet(filepath: str) -> str:
-    """Return 'added', 'present', 'skipped', or 'nohead'."""
+def ensure_snippet(filepath: str, check_only: bool = False) -> str:
+    """Return 'added', 'missing', 'present', 'skipped', or 'nohead'.
+
+    In check_only mode, files needing the snippet return 'missing' and
+    are not modified. Otherwise they are modified and return 'added'.
+    """
     with open(filepath, encoding="utf-8") as fh:
         content = fh.read()
 
@@ -54,6 +65,9 @@ def ensure_snippet(filepath: str) -> str:
     if not match:
         return "nohead"
 
+    if check_only:
+        return "missing"
+
     indent = match.group("indent")
     insertion = f"{indent}{SNIPPET}\n"
     new_content = content[: match.start()] + insertion + content[match.start() :]
@@ -64,14 +78,29 @@ def ensure_snippet(filepath: str) -> str:
 
 
 def main() -> int:
-    totals = {"added": [], "present": [], "skipped": [], "nohead": []}
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Do not modify files; exit 1 if any file is missing the snippet.",
+    )
+    args = parser.parse_args()
+
+    totals = {
+        "added": [],
+        "missing": [],
+        "present": [],
+        "skipped": [],
+        "nohead": [],
+    }
     for filepath in sorted(iter_html_files(REPO_ROOT)):
         rel = os.path.relpath(filepath, REPO_ROOT).replace(os.sep, "/")
-        status = ensure_snippet(filepath)
+        status = ensure_snippet(filepath, check_only=args.check)
         totals[status].append(rel)
 
     for status, label in (
         ("added", "Added snippet"),
+        ("missing", "Missing snippet"),
         ("present", "Already present"),
         ("skipped", "Skipped (redirect)"),
         ("nohead", "No </head> found"),
@@ -81,10 +110,18 @@ def main() -> int:
         for f in files:
             print(f"  - {f}")
 
+    exit_code = 0
     if totals["nohead"]:
         print("ERROR: one or more HTML files have no </head> tag.", file=sys.stderr)
-        return 1
-    return 0
+        exit_code = 1
+    if args.check and totals["missing"]:
+        print(
+            "ERROR: one or more HTML files are missing the Umami tracking "
+            "snippet. Run `python3 scripts/ensure-tracking.py` to add it.",
+            file=sys.stderr,
+        )
+        exit_code = 1
+    return exit_code
 
 
 if __name__ == "__main__":
