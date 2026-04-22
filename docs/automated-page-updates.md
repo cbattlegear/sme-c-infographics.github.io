@@ -134,10 +134,21 @@ Findings from each phase are appended below as the spike progresses.
   issue titled `Review <path>` (deduped against existing open issues)
   and assigns the Copilot coding agent via the GraphQL
   `replaceActorsForAssignable` mutation. Copilot then opens a draft
-  PR per issue; humans review and merge. No repo secrets needed — the
-  workflow runs under `${{ github.token }}`. If the Copilot coding
-  agent isn't enabled on the repo the issues are still created,
-  unassigned, so a human can pick them up.
+  PR per issue; humans review and merge. If the Copilot coding agent
+  isn't enabled on the repo the issues are still created, unassigned,
+  so a human can pick them up.
+
+  **Token requirement for Copilot auto-start:** assignments made by
+  `github-actions[bot]` (which is what `${{ secrets.GITHUB_TOKEN }}`
+  authenticates as) do **not** trigger the Copilot coding agent to
+  start work — same design reason `GITHUB_TOKEN` events don't cascade
+  into other workflows. To actually kick off Copilot from this
+  workflow, create a repo or org secret named `COPILOT_ASSIGN_TOKEN`
+  containing a fine-grained PAT (or GitHub App installation token)
+  for a user who has Copilot access on this repo. Required scopes:
+  `issues: write`, `contents: read`, `metadata: read`. The workflow
+  prefers this secret and falls back to `GITHUB_TOKEN` with a log
+  warning + step-summary note if it is absent.
 
 ### Outstanding decisions / follow-ups
 
@@ -149,8 +160,10 @@ Findings from each phase are appended below as the spike progresses.
    post-merge (would need `check-deprecated-terms.py --apply` in
    `ensure-site-chrome.yml`; currently PR-only reporting).
 4. Confirm the Copilot coding agent is enabled on the repo before the
-   first scheduled run of `copilot-page-review.yml`. If it isn't, the
-   workflow still opens issues, just unassigned.
+   first scheduled run of `copilot-page-review.yml`, **and** create
+   the `COPILOT_ASSIGN_TOKEN` secret (fine-grained PAT, `issues: write`
+   + `contents: read` + `metadata: read`) — otherwise issues are
+   created but Copilot does not auto-start on them.
 5. Tune the per-page issue body in `open-copilot-review-issues.py`
    after the first real Copilot PR — especially the guardrails block,
    which is the agent's primary steering signal.
