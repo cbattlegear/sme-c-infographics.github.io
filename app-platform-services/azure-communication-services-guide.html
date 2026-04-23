@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Azure Communication Services — Interactive Learning Guide</title>
+<link rel="preconnect" href="https://static2.sharepointonline.com" />
+<link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css" />
+<style>
+  :root {
+    --ms-blue:       #0078D4;
+    --ms-blue-dark:  #106EBE;
+    --ms-blue-deep:  #005A9E;
+    --ms-blue-soft:  #DEECF9;
+    --ms-blue-tint:  #F3F9FD;
+    --ms-teal:       #008272;
+    --ms-purple:     #5C2D91;
+    --ms-orange:     #D83B01;
+    --ms-gold:       #FFB900;
+    --ms-green:      #107C10;
+    --ms-magenta:    #B4009E;
+    --ms-gray-900:   #201F1E;
+    --ms-gray-700:   #3B3A39;
+    --ms-gray-500:   #605E5C;
+    --ms-gray-300:   #C8C6C4;
+    --ms-gray-200:   #EDEBE9;
+    --ms-gray-100:   #F3F2F1;
+    --ms-white:      #FFFFFF;
+    --ms-ink:        #0B1A2B;
+    --ms-ink-2:      #13253A;
+    --shadow-xs: 0 1px 2px rgba(16,24,40,.05);
+    --shadow-sm: 0 1.6px 3.6px rgba(16,24,40,.06), 0 .3px .9px rgba(16,24,40,.04);
+    --shadow-md: 0 8px 24px rgba(16,24,40,.08), 0 2px 6px rgba(16,24,40,.05);
+    --shadow-lg: 0 20px 48px rgba(16,24,40,.14), 0 6px 16px rgba(16,24,40,.08);
+    --shadow-xl: 0 32px 80px rgba(16,24,40,.18);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --grad-primary: linear-gradient(135deg,#0078D4 0%, #5C2D91 55%, #B4009E 100%);
+    --grad-softlight: linear-gradient(135deg,#F3F9FD 0%,#FFFFFF 55%,#FBF5FC 100%);
+    --grad-ink: linear-gradient(135deg,#0B1A2B 0%, #13253A 60%, #0E3B66 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont,
+                 "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ms-gray-900);
+    background: var(--ms-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-padding-top: 88px;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: "Segoe UI Variable Display", "Segoe UI", sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    margin: 0 0 .5rem;
+    color: var(--ms-ink);
+  }
+  h1 { font-size: clamp(2.6rem, 5.2vw, 4.2rem); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; }
+  h2 { font-size: clamp(1.9rem, 3vw, 2.6rem); line-height: 1.15; font-weight: 700; }
+  h3 { font-size: 1.25rem; font-weight: 600; }
+
+  a { color: var(--ms-blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---------- Scroll progress bar ---------- */
+  #scrollProgress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--ms-blue), var(--ms-purple), var(--ms-magenta));
+    z-index: 1000; transition: width .08s linear;
+  }
+
+  /* ---------- Header / Nav ---------- */
+  header.topbar {
+    position: sticky; top: 0; z-index: 900;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(237,235,233,.7);
+  }
+  .topbar-inner {
+    max-width: 1280px; margin: 0 auto; padding: 16px 28px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 600; color: var(--ms-gray-900); font-size: 1.02rem;
+    letter-spacing: -0.01em;
+  }
+  .brand svg { width: 26px; height: 26px; }
+  .brand .product {
+    background: var(--grad-primary);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  nav.topnav {
+    margin-left: auto;
+    display: flex; gap: 2px; flex-wrap: wrap;
+  }
+  nav.topnav a {
+    color: var(--ms-gray-700);
+    font-size: .92rem; font-weight: 500;
+    padding: 9px 14px;
+    border-radius: 8px;
+    transition: all .18s cubic-bezier(.4,0,.2,1);
+  }
+  nav.topnav a:hover { background: var(--ms-blue-tint); color: var(--ms-blue-deep); text-decoration: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative; overflow: hidden;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 10%, rgba(0,120,212,.22), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 90% 85%, rgba(180,0,158,.16), transparent 60%),
+      radial-gradient(ellipse 40% 60% at 50% 120%, rgba(92,45,145,.12), transparent 60%),
+      linear-gradient(160deg, #F3F9FD 0%, #FFFFFF 55%, #FBF5FC 100%);
+    padding: 120px 24px 140px;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,120,212,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,120,212,.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 85%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 1240px; margin: 0 auto; position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center;
+  }
+  @media (max-width: 960px) { .hero-inner { grid-template-columns: 1fr; } }
+  .hero h1 .grad-text {
+    background: var(--grad-primary);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .hero-kpis {
+    max-width: 1240px; margin: -60px auto 0; padding: 0 24px; position: relative; z-index: 2;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    background: #fff; border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl); border: 1px solid var(--ms-gray-200);
+    overflow: hidden;
+  }
+  @media (max-width: 860px) { .hero-kpis { grid-template-columns: repeat(2, 1fr); margin-top: -40px; } }
+  .hero-kpi { padding: 28px 24px; text-align: left; border-right: 1px solid var(--ms-gray-200); }
+  .hero-kpi:last-child { border-right: none; }
+  @media (max-width: 860px) {
+    .hero-kpi:nth-child(2) { border-right: none; }
+    .hero-kpi:nth-child(-n+2) { border-bottom: 1px solid var(--ms-gray-200); }
+  }
+  .hero-kpi .num {
+    font-family: "Segoe UI Variable Display", "Segoe UI", sans-serif;
+    font-size: 2.2rem; font-weight: 700; letter-spacing: -0.03em;
+    background: var(--grad-primary);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  .hero-kpi .lbl { margin-top: 8px; color: var(--ms-gray-500); font-size: .86rem; font-weight: 500; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .82rem; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ms-blue-deep);
+    background: var(--ms-blue-soft);
+    padding: 6px 12px; border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--ms-blue);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50%     { transform: scale(1.6); opacity: .45; }
+  }
+
+  .hero p.lead {
+    font-size: 1.15rem; color: var(--ms-gray-700); max-width: 560px;
+  }
+  .hero-cta { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 26px; border-radius: 10px;
+    font-weight: 600; font-size: .98rem; cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .22s cubic-bezier(.4,0,.2,1);
+    font-family: inherit; letter-spacing: -0.005em;
+  }
+  .btn-primary {
+    background: var(--grad-primary);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0,120,212,.32), inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(0,120,212,.40), inset 0 1px 0 rgba(255,255,255,.2);
+    text-decoration: none;
+  }
+  .btn-ghost {
+    background: rgba(255,255,255,.7);
+    backdrop-filter: blur(8px);
+    border-color: var(--ms-gray-300);
+    color: var(--ms-gray-900);
+  }
+  .btn-ghost:hover {
+    border-color: var(--ms-blue);
+    color: var(--ms-blue);
+    background: #fff;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ---------- Hero visual: floating glass channel stack ---------- */
+  .hero-stack {
+    position: relative; aspect-ratio: 1/1.05; max-width: 480px; margin-left: auto;
+    perspective: 1400px;
+  }
+  .hero-stack .glow {
+    position: absolute; inset: 8% 6% 12% 8%;
+    background: radial-gradient(ellipse at center, rgba(0,120,212,.28), rgba(92,45,145,.18) 45%, transparent 70%);
+    filter: blur(36px); z-index: 0;
+  }
+  .hstack-card {
+    position: absolute; background: rgba(255,255,255,.82);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 16px;
+    box-shadow:
+      0 24px 48px rgba(16,24,40,.14),
+      0 4px 12px rgba(16,24,40,.06),
+      inset 0 1px 0 rgba(255,255,255,.7);
+    padding: 16px 18px;
+    display: flex; gap: 12px; align-items: flex-start;
+    animation: hsfloat 7s ease-in-out infinite;
+  }
+  .hstack-card .hs-avatar {
+    flex: 0 0 40px; width: 40px; height: 40px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 20px; color: #fff;
+    box-shadow: 0 6px 14px rgba(0,120,212,.25);
+  }
+  .hstack-card .hs-body { font-size: .86rem; color: var(--ms-gray-700); line-height: 1.35; min-width: 0; }
+  .hstack-card .hs-body strong { color: var(--ms-ink); display: block; font-size: .92rem; margin-bottom: 2px; letter-spacing: -.005em; }
+  .hstack-card .hs-meta { font-size: .72rem; color: var(--ms-gray-500); margin-top: 6px; display: inline-flex; gap: 6px; align-items: center; }
+  .hstack-card .hs-meta .live { width: 6px; height: 6px; border-radius: 50%; background: var(--ms-green); box-shadow: 0 0 0 3px rgba(16,124,16,.2); animation: pulse 2s ease-in-out infinite; }
+
+  /* Card 1 – Email */
+  .hstack-card.c1 {
+    top: 4%; left: 2%; width: 62%;
+    transform: rotate(-3.5deg) translateZ(0);
+    animation-delay: 0s;
+  }
+  .hstack-card.c1 .hs-avatar { background: linear-gradient(135deg, #0078D4, #50A6F7); }
+
+  /* Card 2 – Teams call */
+  .hstack-card.c2 {
+    top: 34%; right: 0%; width: 66%;
+    transform: rotate(2.5deg);
+    animation-delay: .9s;
+  }
+  .hstack-card.c2 .hs-avatar { background: linear-gradient(135deg, #5C2D91, #B4009E); }
+
+  /* Card 3 – SMS chat */
+  .hstack-card.c3 {
+    bottom: 6%; left: 6%; width: 58%;
+    transform: rotate(-1.5deg);
+    animation-delay: 1.8s;
+  }
+  .hstack-card.c3 .hs-avatar { background: linear-gradient(135deg, #008272, #107C10); }
+
+  @keyframes hsfloat {
+    0%,100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+    50%     { transform: translateY(-8px) rotate(var(--rot, 0deg)); }
+  }
+  .hstack-card.c1 { --rot: -3.5deg; }
+  .hstack-card.c2 { --rot: 2.5deg; }
+  .hstack-card.c3 { --rot: -1.5deg; }
+
+  /* Floating channel badges */
+  .hs-badge {
+    position: absolute; width: 54px; height: 54px; border-radius: 16px;
+    display: grid; place-items: center; color: #fff;
+    box-shadow: 0 16px 36px rgba(16,24,40,.18), inset 0 1px 0 rgba(255,255,255,.25);
+    animation: hsfloat 6s ease-in-out infinite;
+    font-size: 24px;
+  }
+  .hs-badge.b1 { top: 2%; right: 10%; background: linear-gradient(135deg, #B4009E, #E081D8); animation-delay: .4s; --rot: 6deg; transform: rotate(6deg); }
+  .hs-badge.b2 { bottom: 10%; right: 8%; background: linear-gradient(135deg, #D83B01, #FFB900); animation-delay: 1.2s; --rot: -4deg; transform: rotate(-4deg); }
+
+  /* ---------- Sections ---------- */
+  section.block {
+    max-width: 1240px; margin: 0 auto; padding: 88px 24px;
+  }
+  section.block.tinted {
+    background: var(--ms-blue-tint);
+    max-width: none; padding-left: calc((100% - 1240px)/2 + 24px);
+    padding-right: calc((100% - 1240px)/2 + 24px);
+  }
+  .section-head { max-width: 780px; margin-bottom: 56px; }
+  .section-head .kicker {
+    color: var(--ms-blue); font-weight: 700; font-size: .82rem;
+    letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .section-head .kicker::before {
+    content: ""; width: 28px; height: 2px; background: var(--grad-primary); border-radius: 2px;
+  }
+  .section-head p { color: var(--ms-gray-700); font-size: 1.1rem; line-height: 1.6; max-width: 680px; }
+
+  /* ---------- Reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.delay-1 { transition-delay: .08s; }
+  .reveal.delay-2 { transition-delay: .16s; }
+  .reveal.delay-3 { transition-delay: .24s; }
+  .reveal.delay-4 { transition-delay: .32s; }
+
+  /* ---------- Overview infographic ---------- */
+  .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 960px) { .pillars { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .pillars { grid-template-columns: 1fr; } }
+
+  .pillar {
+    background: #fff; border: 1px solid var(--ms-gray-200);
+    border-radius: var(--radius-lg); padding: 32px 28px;
+    box-shadow: var(--shadow-xs);
+    transition: transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s ease, border-color .2s ease;
+    position: relative; overflow: hidden;
+  }
+  .pillar::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--grad-primary);
+    transform: scaleX(0); transform-origin: left; transition: transform .4s ease;
+  }
+  .pillar:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: transparent; }
+  .pillar:hover::before { transform: scaleX(1); }
+  .pillar .icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    display: grid; place-items: center; margin-bottom: 20px;
+    background: var(--ms-blue-soft); color: var(--ms-blue-deep);
+    font-size: 26px;
+    transition: transform .25s ease, box-shadow .25s ease;
+    position: relative;
+  }
+  .pillar .icon::before {
+    content: ""; position: absolute; inset: -2px; border-radius: 18px;
+    background: var(--grad-primary);
+    opacity: 0; transition: opacity .3s ease; z-index: -1;
+  }
+  .pillar:hover .icon { transform: scale(1.06) rotate(-3deg); box-shadow: 0 12px 24px rgba(0,120,212,.22); }
+  .pillar h3 { font-size: 1.14rem; margin-bottom: 8px; font-weight: 600; }
+  .pillar p { color: var(--ms-gray-500); font-size: .94rem; margin: 0; line-height: 1.55; }
+
+  /* ---------- Channels (tabbed interactive) ---------- */
+  .channels {
+    background: #fff; border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md); border: 1px solid var(--ms-gray-200);
+    overflow: hidden;
+  }
+  .channel-tabs {
+    display: flex; flex-wrap: wrap;
+    border-bottom: 1px solid var(--ms-gray-200);
+    background: var(--ms-gray-100);
+  }
+  .channel-tab {
+    flex: 1; min-width: 140px; padding: 18px 14px;
+    text-align: center; cursor: pointer;
+    font-weight: 600; color: var(--ms-gray-700);
+    border: none; background: transparent;
+    font-family: inherit; font-size: .95rem;
+    border-bottom: 3px solid transparent;
+    transition: all .18s ease;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .channel-tab .ct-icon { font-size: 22px; }
+  .channel-tab:hover { background: #fff; color: var(--ms-blue-deep); }
+  .channel-tab.active {
+    background: #fff; color: var(--ms-blue-deep);
+    border-bottom-color: transparent;
+    position: relative;
+  }
+  .channel-tab.active::after {
+    content: ""; position: absolute; left: 12%; right: 12%; bottom: -1.5px; height: 3px;
+    background: var(--grad-primary); border-radius: 3px 3px 0 0;
+  }
+  .channel-panels { padding: 40px; }
+  .channel-panel { display: none; animation: fadeUp .45s ease both; }
+  .channel-panel.active { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
+  @media (max-width: 860px) { .channel-panel.active { grid-template-columns: 1fr; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  .channel-panel h3 { font-size: 1.6rem; margin-bottom: 10px; }
+  .channel-panel ul { padding-left: 18px; color: var(--ms-gray-700); }
+  .channel-panel li { margin: 6px 0; }
+  .channel-visual {
+    aspect-ratio: 4/3; border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 20% 20%, rgba(0,120,212,.18), transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(180,0,158,.14), transparent 50%),
+      linear-gradient(135deg, var(--ms-blue-tint), #F4EEF7);
+    display: grid; place-items: center; position: relative; overflow: hidden;
+  }
+  .channel-visual::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,120,212,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,120,212,.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 75%);
+  }
+  .channel-visual .big-icon {
+    font-size: 96px; opacity: .95;
+    filter: drop-shadow(0 14px 26px rgba(0,120,212,.3));
+    animation: floaty 4.5s ease-in-out infinite;
+    position: relative; z-index: 1;
+  }
+  @keyframes floaty {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-10px); }
+  }
+  .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; background: var(--ms-blue-soft); color: var(--ms-blue-deep); font-size: .78rem; font-weight: 600; margin: 2px 4px 2px 0; }
+
+  /* ---------- Timeline (What's new) ---------- */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 8px; top: 4px; bottom: 4px;
+    width: 2px; background: linear-gradient(var(--ms-blue), var(--ms-purple));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 22px; }
+  .tl-item::before {
+    content: ""; position: absolute; left: -24px; top: 6px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--ms-blue);
+    box-shadow: 0 0 0 4px var(--ms-blue-soft);
+    transition: transform .2s ease;
+  }
+  .tl-item:hover::before { transform: scale(1.25); }
+  .tl-item .date { color: var(--ms-gray-500); font-size: .82rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .tl-item h4 { margin: 2px 0 4px; font-size: 1.05rem; }
+  .tl-item p { margin: 0; color: var(--ms-gray-700); font-size: .94rem; }
+
+  /* ---------- Get started steps ---------- */
+  .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; counter-reset: step; position: relative; }
+  .steps::before {
+    content: ""; position: absolute; top: 32px; left: 5%; right: 5%;
+    height: 2px; background-image: linear-gradient(90deg, var(--ms-blue) 50%, transparent 50%);
+    background-size: 10px 2px; background-repeat: repeat-x; opacity: .25;
+    z-index: 0;
+  }
+  @media (max-width: 960px) { .steps { grid-template-columns: repeat(2,1fr); } .steps::before { display: none; } }
+  @media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    position: relative; padding: 28px 22px 22px;
+    background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--ms-gray-200);
+    box-shadow: var(--shadow-sm);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    z-index: 1;
+  }
+  .step:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--ms-blue); }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    position: absolute; top: -16px; left: 22px;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--grad-primary); color: #fff;
+    display: grid; place-items: center;
+    font-weight: 700; box-shadow: 0 8px 18px rgba(0,120,212,.35);
+    font-size: .98rem;
+    border: 3px solid #fff;
+  }
+  .step h4 { margin-top: 8px; font-size: 1rem; }
+  .step p { font-size: .9rem; color: var(--ms-gray-500); margin: 4px 0 0; }
+
+  /* ---------- Services grid ---------- */
+  .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  @media (max-width: 960px) { .services { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 560px) { .services { grid-template-columns: 1fr; } }
+
+  .service {
+    background: #fff; padding: 28px 24px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--ms-gray-200);
+    position: relative; overflow: hidden;
+    transition: all .2s ease;
+  }
+  .service::after {
+    content: ""; position: absolute; right: -40px; bottom: -40px;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: var(--ms-blue-tint);
+    transition: transform .35s ease;
+    z-index: 0;
+  }
+  .service:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); border-color: transparent; }
+  .service:hover::after { transform: scale(1.4); }
+  .service > * { position: relative; z-index: 1; }
+  .service .icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--grad-primary); color: #fff;
+    display: grid; place-items: center; font-size: 22px; margin-bottom: 14px;
+    box-shadow: 0 8px 18px rgba(0,120,212,.28);
+  }
+  .service h4 { font-size: 1.05rem; margin-bottom: 6px; }
+  .service p { font-size: .92rem; color: var(--ms-gray-700); margin: 0 0 12px; }
+  .service a.learn { font-weight: 600; font-size: .88rem; display: inline-flex; align-items: center; gap: 6px; }
+
+  /* ---------- Reference SDK/REST matrix ---------- */
+  .ref-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 860px) { .ref-wrap { grid-template-columns: 1fr; } }
+  .ref-card {
+    background: #fff; border: 1px solid var(--ms-gray-200); border-radius: var(--radius-lg);
+    padding: 28px; box-shadow: var(--shadow-sm);
+  }
+  .ref-card h3 { color: var(--ms-blue); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip {
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--ms-gray-100); color: var(--ms-gray-900);
+    font-size: .88rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all .18s ease; cursor: default;
+  }
+  .chip:hover { background: var(--ms-blue); color: #fff; transform: translateY(-2px); }
+  .chip .dot-lang {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--ms-blue);
+  }
+
+  /* ---------- Training cards ---------- */
+  .training { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  @media (max-width: 960px) { .training { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .training { grid-template-columns: 1fr; } }
+  .train-card {
+    display: block; color: inherit; text-decoration: none;
+    background: linear-gradient(160deg, #fff 60%, var(--ms-blue-tint));
+    border: 1px solid var(--ms-gray-200);
+    border-radius: var(--radius-lg); padding: 24px;
+    position: relative;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .train-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); text-decoration: none; border-color: var(--ms-blue); }
+  .train-card:hover h4 { color: var(--ms-blue-deep); }
+  .train-card::after {
+    content: "→"; position: absolute; right: 20px; bottom: 18px;
+    color: var(--ms-blue); font-weight: 700; font-size: 1.1rem;
+    transition: transform .25s ease;
+  }
+  .train-card:hover::after { transform: translateX(4px); }
+  .train-card .tag {
+    display: inline-block; font-size: .72rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px;
+    background: var(--ms-blue); color: #fff; letter-spacing: .04em;
+    margin-bottom: 10px;
+  }
+  .train-card h4 { font-size: 1rem; }
+  .train-card p { color: var(--ms-gray-700); font-size: .9rem; }
+  .train-card .meta { margin-top: 10px; font-size: .82rem; color: var(--ms-gray-500); padding-right: 28px; }
+
+  /* ---------- Executive Business Value band ---------- */
+  .exec-band {
+    background: var(--grad-ink);
+    color: #E6EDF5;
+    position: relative; overflow: hidden;
+  }
+  .exec-band::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(0,120,212,.35), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(180,0,158,.25), transparent 45%);
+    pointer-events: none;
+  }
+  .exec-inner {
+    max-width: 1240px; margin: 0 auto; padding: 96px 24px;
+    position: relative; z-index: 1;
+  }
+  .exec-band .section-head h2,
+  .exec-band .section-head { color: #fff; }
+  .exec-band .section-head h2 { color: #fff; }
+  .exec-band .section-head p { color: #B9C6D6; }
+  .exec-band .section-head .kicker { color: #50A6F7; }
+  .exec-band .section-head .kicker::before { background: linear-gradient(90deg, #50A6F7, #E081D8); }
+
+  .exec-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  @media (max-width: 960px) { .exec-grid { grid-template-columns: 1fr; } }
+  .exec-card {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    backdrop-filter: blur(10px);
+    transition: all .3s ease;
+    position: relative; overflow: hidden;
+  }
+  .exec-card::after {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(0,120,212,.08), rgba(180,0,158,.05));
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .exec-card:hover { transform: translateY(-6px); border-color: rgba(80,166,247,.45); background: rgba(255,255,255,.06); }
+  .exec-card:hover::after { opacity: 1; }
+  .exec-card > * { position: relative; z-index: 1; }
+  .exec-card .metric {
+    font-family: "Segoe UI Variable Display", "Segoe UI", sans-serif;
+    font-size: 2.6rem; font-weight: 700; letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #50A6F7, #E081D8);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px; line-height: 1;
+  }
+  .exec-card h4 { color: #fff; font-size: 1.1rem; margin-bottom: 8px; font-weight: 600; }
+  .exec-card p { color: #B9C6D6; font-size: .94rem; margin: 0; line-height: 1.6; }
+
+  /* ---------- Support section ---------- */
+  .support-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  @media (max-width: 960px) { .support-grid { grid-template-columns: 1fr; } }
+
+  .support-card {
+    background: #fff;
+    border: 1px solid var(--ms-gray-200);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    box-shadow: var(--shadow-xs);
+    transition: all .25s cubic-bezier(.4,0,.2,1);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .support-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 0;
+    background: var(--grad-primary);
+    transition: height .3s ease;
+  }
+  .support-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: transparent; }
+  .support-card:hover::before { height: 4px; }
+  .support-card .icon-lg {
+    width: 56px; height: 56px; border-radius: var(--radius-md);
+    background: var(--grad-primary);
+    display: grid; place-items: center;
+    color: #fff; font-size: 26px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(0,120,212,.25);
+  }
+  .support-card h4 { font-size: 1.1rem; margin-bottom: 6px; }
+  .support-card p { color: var(--ms-gray-700); font-size: .93rem; margin: 0 0 18px; flex-grow: 1; }
+  .support-card .support-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 600; font-size: .92rem;
+    color: var(--ms-blue);
+  }
+  .support-card .support-link::after {
+    content: "→"; transition: transform .25s ease;
+  }
+  .support-card:hover .support-link::after { transform: translateX(4px); }
+
+  /* ---------- Pricing ---------- */
+  .price-filter {
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;
+    background: #fff; border: 1px solid var(--ms-gray-200);
+    border-radius: var(--radius-lg);
+    padding: 18px 22px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-xs);
+  }
+  .price-filter .pf-field { display: flex; flex-direction: column; gap: 6px; min-width: 200px; flex: 1; }
+  .price-filter label {
+    font-size: .78rem; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ms-gray-500);
+  }
+  .price-filter select {
+    appearance: none; -webkit-appearance: none;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%230078D4' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 14px center;
+    background-size: 12px 8px;
+    border: 1px solid var(--ms-gray-300); border-radius: var(--radius-sm);
+    padding: 10px 40px 10px 14px;
+    font-family: inherit; font-size: .95rem; font-weight: 500;
+    color: var(--ms-gray-900); cursor: pointer;
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+  .price-filter select:hover { border-color: var(--ms-blue); }
+  .price-filter select:focus {
+    outline: none; border-color: var(--ms-blue);
+    box-shadow: 0 0 0 3px rgba(0,120,212,.18);
+  }
+  .price-filter .pf-note {
+    font-size: .82rem; color: var(--ms-gray-500);
+    flex-basis: 100%; margin-top: 2px; line-height: 1.45;
+  }
+  .price-filter .pf-note strong { color: var(--ms-ink); }
+
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  @media (max-width: 960px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+  .price-card {
+    background: #fff; border: 1px solid var(--ms-gray-200);
+    border-radius: var(--radius-lg); padding: 28px 26px;
+    box-shadow: var(--shadow-xs);
+    display: flex; flex-direction: column;
+    transition: transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s ease, border-color .2s ease;
+    position: relative; overflow: hidden;
+  }
+  .price-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--grad-primary);
+    transform: scaleX(0); transform-origin: left; transition: transform .4s ease;
+  }
+  .price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: transparent; }
+  .price-card:hover::before { transform: scaleX(1); }
+
+  .price-card .price-head {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+  }
+  .price-card .price-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 22px;
+    background: var(--ms-blue-soft); color: var(--ms-blue-deep);
+    flex-shrink: 0;
+  }
+  .price-card h4 {
+    font-size: 1.08rem; margin: 0; font-weight: 600; letter-spacing: -.005em;
+  }
+  .price-card .price-sub {
+    font-size: .84rem; color: var(--ms-gray-500); margin-top: 2px;
+  }
+
+  .price-list {
+    list-style: none; padding: 0; margin: 0 0 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    flex: 1;
+  }
+  .price-list li {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; padding-bottom: 10px;
+    border-bottom: 1px dashed var(--ms-gray-200);
+  }
+  .price-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .price-list .pl-label {
+    font-size: .9rem; color: var(--ms-gray-700); line-height: 1.4; flex: 1;
+  }
+  .price-list .pl-label small {
+    display: block; color: var(--ms-gray-500); font-size: .78rem; margin-top: 2px;
+  }
+  .price-list .pl-value {
+    font-family: "Segoe UI Variable Display", "Segoe UI", sans-serif;
+    font-weight: 700; font-size: .92rem; color: var(--ms-ink);
+    white-space: nowrap; letter-spacing: -.01em;
+  }
+  .price-list .pl-value.highlight {
+    background: var(--grad-primary);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .price-list .pl-value.vary {
+    color: var(--ms-gray-500); font-weight: 600; font-size: .82rem;
+  }
+
+  .price-card .price-foot {
+    font-size: .82rem; color: var(--ms-blue); font-weight: 600; margin-top: auto;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .price-card .price-foot::after { content: "→"; transition: transform .25s ease; }
+  .price-card:hover .price-foot::after { transform: translateX(4px); }
+
+  /* Pricing example / callout */
+  .price-example {
+    margin-top: 28px;
+    background: var(--grad-ink);
+    color: #fff; border-radius: var(--radius-xl);
+    padding: 36px 36px;
+    display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: center;
+    box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+  }
+  .price-example::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 60% at 90% 10%, rgba(180,0,158,.22), transparent 60%),
+      radial-gradient(ellipse 50% 60% at 10% 100%, rgba(0,120,212,.22), transparent 60%);
+    pointer-events: none;
+  }
+  @media (max-width: 860px) { .price-example { grid-template-columns: 1fr; padding: 28px 24px; } }
+  .price-example .pe-body { position: relative; z-index: 1; }
+  .price-example .pe-kicker {
+    font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: #50A6F7; margin-bottom: 10px;
+  }
+  .price-example h3 {
+    color: #fff; font-size: 1.35rem; margin-bottom: 10px;
+  }
+  .price-example p { color: #B9C6D6; font-size: .96rem; margin: 0; line-height: 1.55; }
+
+  .pe-calc {
+    position: relative; z-index: 1;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+    backdrop-filter: blur(10px);
+  }
+  .pe-calc-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 8px 0; font-size: .92rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .pe-calc-row:last-of-type { border-bottom: none; }
+  .pe-calc-row .pc-lbl { color: #B9C6D6; }
+  .pe-calc-row .pc-val { color: #fff; font-weight: 600; }
+  .pe-calc-total {
+    margin-top: 12px; padding-top: 14px;
+    border-top: 2px solid rgba(255,255,255,.2);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .pe-calc-total .pct-lbl { color: #fff; font-weight: 600; font-size: 1rem; }
+  .pe-calc-total .pct-val {
+    font-family: "Segoe UI Variable Display", "Segoe UI", sans-serif;
+    font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em;
+    background: linear-gradient(90deg, #50A6F7, #E081D8);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .price-note {
+    margin-top: 18px; padding: 14px 18px;
+    background: var(--ms-blue-tint);
+    border-left: 3px solid var(--ms-blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: .88rem; color: var(--ms-gray-700); line-height: 1.55;
+  }
+  .price-note strong { color: var(--ms-ink); }
+
+  .price-cta {
+    margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+
+  /* ---------- Footer ---------- */
+  footer.site-footer {
+    background: #201F1E; color: #d2d0ce; padding: 48px 24px 24px; margin-top: 40px;
+  }
+  .footer-inner { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; }
+  @media (max-width: 860px) { .footer-inner { grid-template-columns: 1fr 1fr; } }
+  footer h5 { color: #fff; font-size: .92rem; margin: 0 0 12px; letter-spacing: .04em; text-transform: uppercase; }
+  footer a { color: #d2d0ce; display: block; padding: 4px 0; font-size: .9rem; }
+  footer a:hover { color: #fff; }
+  .footer-bottom {
+    max-width: 1240px; margin: 32px auto 0; padding-top: 20px;
+    border-top: 1px solid #3b3a39;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    color: #a19f9d; font-size: .82rem;
+  }
+
+  /* Subtle animated background shapes */
+  .shape-bg {
+    position: absolute; z-index: 0;
+    border-radius: 50%; filter: blur(40px); opacity: .4;
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: translate(0,0); }
+    to   { transform: translate(30px,-20px); }
+  }
+</style>
+</head>
+<body>
+
+<div id="scrollProgress"></div>
+
+<!-- ============= HEADER ============= -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <!-- Microsoft 4-square logo -->
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
+        <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
+        <rect x="1" y="13" width="10" height="10" fill="#00A4EF"/>
+        <rect x="13" y="13" width="10" height="10" fill="#FFB900"/>
+      </svg>
+      <span class="product">Azure Communication Services</span>
+    </div>
+    <nav class="topnav">
+      <a href="#overview">Overview</a>
+      <a href="#whats-new">What's new</a>
+      <a href="#get-started">Get started</a>
+      <a href="#channels">Channels</a>
+      <a href="#services">More services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#reference">Reference</a>
+      <a href="#training">Training</a>
+      <a href="#support">Support</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============= HERO ============= -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="reveal in">
+      <span class="eyebrow"><span class="dot"></span>The platform behind Microsoft Teams — for your apps</span>
+      <h1>Every channel.<br/>One cloud.<br/><span class="grad-text">Infinite possibility.</span></h1>
+      <p class="lead">
+        Azure Communication Services gives your organization enterprise-grade voice, video, chat,
+        SMS, email and Teams interoperability — delivered as composable APIs on the same global
+        network that powers Microsoft Teams.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#get-started">Get started &rarr;</a>
+        <a class="btn btn-ghost" href="https://learn.microsoft.com/en-us/azure/communication-services/" target="_blank" rel="noopener">View documentation</a>
+      </div>
+    </div>
+    <div class="reveal in delay-2">
+      <div class="hero-stack" aria-hidden="true">
+        <div class="glow"></div>
+
+        <div class="hstack-card c1">
+          <div class="hs-avatar">📧</div>
+          <div class="hs-body">
+            <strong>Billing confirmation</strong>
+            Delivered to 124,318 customers
+            <span class="hs-meta"><span class="live"></span> ACS Email · live</span>
+          </div>
+        </div>
+
+        <div class="hstack-card c2">
+          <div class="hs-avatar">🎥</div>
+          <div class="hs-body">
+            <strong>Teams meeting in progress</strong>
+            3 agents · HD · captions on
+            <span class="hs-meta"><span class="live"></span> Calling SDK · Teams interop</span>
+          </div>
+        </div>
+
+        <div class="hstack-card c3">
+          <div class="hs-avatar">💬</div>
+          <div class="hs-body">
+            <strong>OTP delivered</strong>
+            SMS → +1 (312) 555‑0102
+            <span class="hs-meta"><span class="live"></span> 99.9% SLA</span>
+          </div>
+        </div>
+
+        <div class="hs-badge b1">✨</div>
+        <div class="hs-badge b2">☎️</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= HERO KPI BAND ============= -->
+<div class="hero-kpis reveal">
+  <div class="hero-kpi"><div class="num" data-target="99.9" data-suffix="%">0%</div><div class="lbl">Service-level agreement</div></div>
+  <div class="hero-kpi"><div class="num" data-target="6" data-suffix="">0</div><div class="lbl">Native channels in one platform</div></div>
+  <div class="hero-kpi"><div class="num">PAYG</div><div class="lbl">No per-seat licensing</div></div>
+  <div class="hero-kpi"><div class="num">Teams</div><div class="lbl">Native interoperability</div></div>
+</div>
+
+<!-- ============= OVERVIEW ============= -->
+<section id="overview" class="block">
+  <div class="section-head reveal">
+    <div class="kicker">Overview</div>
+    <h2>One platform. Every channel.</h2>
+    <p>A unified, globally available cloud platform for real-time and asynchronous communication — built on the same infrastructure that runs Microsoft Teams, with enterprise-grade security and compliance.</p>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar reveal" style="--accent: var(--ms-blue);">
+      <div class="icon" style="background:#DEECF9;color:#005A9E;">🌐</div>
+      <h3>Globally scaled</h3>
+      <p>Powered by Microsoft's global network — the same infrastructure that underpins Teams.</p>
+    </div>
+    <div class="pillar reveal delay-1" style="--accent: var(--ms-teal);">
+      <div class="icon" style="background:#CFF0E9;color:#004B3C;">🧩</div>
+      <h3>Composable APIs</h3>
+      <p>Pick only the channels you need — voice, video, chat, SMS, email — and combine them in any app.</p>
+    </div>
+    <div class="pillar reveal delay-2" style="--accent: var(--ms-purple);">
+      <div class="icon" style="background:#E9D8FD;color:#3B1F66;">🤝</div>
+      <h3>Teams interop</h3>
+      <p>Join Teams meetings, chats and calls from your own custom apps — web, mobile, desktop.</p>
+    </div>
+    <div class="pillar reveal delay-3" style="--accent: var(--ms-orange);">
+      <div class="icon" style="background:#FDE2D3;color:#8E2400;">🔒</div>
+      <h3>Enterprise trust</h3>
+      <p>HIPAA, SOC, ISO, PCI, GDPR and EU Data Boundary. End-to-end encryption in transit.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= EXECUTIVE BUSINESS VALUE ============= -->
+<section class="exec-band">
+  <div class="exec-inner">
+    <div class="section-head reveal" style="margin-bottom: 48px;">
+      <div class="kicker">Business value</div>
+      <h2>Why leaders choose Azure Communication Services</h2>
+      <p>Consolidate fragmented communication tooling, accelerate time-to-market, and modernize customer engagement — on a single enterprise-grade platform backed by Microsoft.</p>
+    </div>
+
+    <div class="exec-grid">
+      <div class="exec-card reveal">
+        <div class="metric">1 cloud</div>
+        <h4>Vendor consolidation</h4>
+        <p>Replace a patchwork of SMS gateways, email senders, video SDKs and telephony providers with a single Microsoft-backed contract, one SLA, and one invoice.</p>
+      </div>
+      <div class="exec-card reveal delay-1">
+        <div class="metric">Weeks, not quarters</div>
+        <h4>Accelerated delivery</h4>
+        <p>Drop-in UI Library components and prebuilt workflows let product teams ship customer-facing communication features in weeks — freeing engineering for differentiation.</p>
+      </div>
+      <div class="exec-card reveal delay-2">
+        <div class="metric">PAYG</div>
+        <h4>Usage-aligned economics</h4>
+        <p>Pay only for what you send and the minutes you use. Scale with demand without committing to per-seat licenses or capacity you don't consume.</p>
+      </div>
+      <div class="exec-card reveal">
+        <div class="metric">100+ certs</div>
+        <h4>Enterprise-grade trust</h4>
+        <p>Microsoft Entra ID integration, end-to-end encryption in transit, and a compliance portfolio spanning HIPAA, SOC, ISO, PCI, GDPR and the EU Data Boundary — aligned to Microsoft's Zero Trust security principles.</p>
+      </div>
+      <div class="exec-card reveal delay-1">
+        <div class="metric">Native Teams</div>
+        <h4>Teams as a channel</h4>
+        <p>Extend Microsoft Teams into your own customer-facing apps — no bridging vendors, no media duplication, no separate directory to govern.</p>
+      </div>
+      <div class="exec-card reveal delay-2">
+        <div class="metric">AI-ready</div>
+        <h4>Intelligent by design</h4>
+        <p>Combine Call Automation with Azure AI for live transcription, sentiment, summarization and intent — turning every conversation into structured insight.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= WHAT'S NEW ============= -->
+<section id="whats-new" class="block tinted">
+  <div class="section-head reveal">
+    <div class="kicker">What's new</div>
+    <h2>Recent platform highlights</h2>
+    <p>ACS is updated continuously. A snapshot of recent and notable capabilities you can use today.</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+    <div class="reveal">
+      <div class="timeline">
+        <div class="tl-item"><span class="date">Latest</span><h4>Advanced Messaging for WhatsApp</h4><p>Send and receive WhatsApp Business messages through a single ACS API — notifications, OTPs, and two-way conversations.</p></div>
+        <div class="tl-item"><span class="date">Recent</span><h4>High-volume Email scale</h4><p>ACS Email is now the recommended destination for customers hitting Exchange Online tenant outbound limits (TERRL).</p></div>
+        <div class="tl-item"><span class="date">Recent</span><h4>Call Automation + Azure AI</h4><p>Real-time transcription, sentiment and summarization directly inside Call Automation workflows.</p></div>
+        <div class="tl-item"><span class="date">Evolving</span><h4>UI Library Composites</h4><p>Plug-and-play calling and chat components for React / Web / iOS / Android — ship UI in hours, not sprints.</p></div>
+      </div>
+    </div>
+    <div class="reveal delay-2">
+      <div style="position:relative;background:#fff;border-radius:var(--radius-lg);padding:28px;border:1px solid var(--ms-gray-200);box-shadow:var(--shadow-md);">
+        <h3 style="margin-bottom:6px;">Why it matters</h3>
+        <p style="color:var(--ms-gray-700);font-size:.95rem;">Communication is no longer a silo. ACS lets you unify every channel — voice, video, chat, SMS, email and Teams — behind a single identity model and one billing surface.</p>
+        <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div><div style="font-size:2rem;font-weight:700;color:var(--ms-blue);">99.9%</div><small>SLA uptime</small></div>
+          <div><div style="font-size:2rem;font-weight:700;color:var(--ms-blue);">30+</div><small>Countries covered for voice/SMS</small></div>
+          <div><div style="font-size:2rem;font-weight:700;color:var(--ms-blue);">PAYG</div><small>No per-user licensing</small></div>
+          <div><div style="font-size:2rem;font-weight:700;color:var(--ms-blue);">Teams</div><small>Native interop</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= GET STARTED ============= -->
+<section id="get-started" class="block">
+  <div class="section-head reveal">
+    <div class="kicker">Get started</div>
+    <h2>From zero to "hello world" in four steps</h2>
+    <p>A consistent onboarding path whether you're adding SMS, email, calling or chat.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step reveal"><h4>Create a resource</h4><p>Provision an Azure Communication Services resource in the Azure portal or via ARM/Bicep.</p></div>
+    <div class="step reveal delay-1"><h4>Choose a channel</h4><p>Select voice, video, chat, SMS, email or advanced messaging for your scenario.</p></div>
+    <div class="step reveal delay-2"><h4>Install the SDK</h4><p>Add the .NET, JavaScript, Java, Python, iOS, Android or PowerShell SDK to your app.</p></div>
+    <div class="step reveal delay-3"><h4>Authenticate &amp; send</h4><p>Issue an identity token or use connection string, then send your first message or make your first call.</p></div>
+  </div>
+</section>
+
+<!-- ============= CHANNELS ============= -->
+<section id="channels" class="block tinted">
+  <div class="section-head reveal">
+    <div class="kicker">Communication channels</div>
+    <h2>Meet your customers where they are</h2>
+    <p>Click each channel to see capabilities, common scenarios, and the SDKs available.</p>
+  </div>
+
+  <div class="channels reveal">
+    <div class="channel-tabs" role="tablist">
+      <button class="channel-tab active" data-tab="email"     role="tab"><span class="ct-icon">📧</span>Email</button>
+      <button class="channel-tab"        data-tab="sms"       role="tab"><span class="ct-icon">📱</span>SMS</button>
+      <button class="channel-tab"        data-tab="voice"     role="tab"><span class="ct-icon">☎️</span>Phone Calling</button>
+      <button class="channel-tab"        data-tab="chat"      role="tab"><span class="ct-icon">💬</span>Chat</button>
+      <button class="channel-tab"        data-tab="video"     role="tab"><span class="ct-icon">🎥</span>Voice &amp; Video</button>
+      <button class="channel-tab"        data-tab="messaging" role="tab"><span class="ct-icon">✨</span>Advanced Messaging</button>
+    </div>
+    <div class="channel-panels">
+
+      <div class="channel-panel active" data-panel="email">
+        <div>
+          <h3>📧 Email</h3>
+          <p>Send transactional and bulk email at scale from your own verified domain — the recommended path for workloads throttled by Exchange Online TERRL / RRL limits.</p>
+          <ul>
+            <li>REST API, SDKs or SMTP AUTH relay</li>
+            <li>Custom domain support with SPF/DKIM/ARC</li>
+            <li>Delivery analytics, bounce &amp; suppression lists</li>
+            <li>EU Data Boundary supported</li>
+          </ul>
+          <div><span class="pill">.NET</span><span class="pill">Java</span><span class="pill">Python</span><span class="pill">JavaScript</span><span class="pill">SMTP</span></div>
+        </div>
+        <div class="channel-visual"><div class="big-icon">📧</div></div>
+      </div>
+
+      <div class="channel-panel" data-panel="sms">
+        <div>
+          <h3>📱 SMS</h3>
+          <p>Send and receive SMS messages using toll-free numbers, short codes or long codes — for alerts, 2FA, reminders and two-way conversations.</p>
+          <ul>
+            <li>Toll-free, short-code and alphanumeric sender IDs</li>
+            <li>Opt-out handling and delivery reports</li>
+            <li>Global coverage with region-specific compliance</li>
+            <li>Event Grid webhooks for inbound messages</li>
+          </ul>
+          <div><span class="pill">.NET</span><span class="pill">Java</span><span class="pill">Python</span><span class="pill">JavaScript</span></div>
+        </div>
+        <div class="channel-visual"><div class="big-icon">📱</div></div>
+      </div>
+
+      <div class="channel-panel" data-panel="voice">
+        <div>
+          <h3>☎️ Phone Calling (PSTN)</h3>
+          <p>Purchase phone numbers and make/receive PSTN calls directly from your application or route calls through your existing SBC via Direct Routing.</p>
+          <ul>
+            <li>Outbound and inbound calling from the cloud</li>
+            <li>Direct Routing via your SBC — bring your carrier</li>
+            <li>Emergency calling and dynamic location</li>
+            <li>Integrates with Call Automation for IVR &amp; bots</li>
+          </ul>
+          <div><span class="pill">.NET</span><span class="pill">JavaScript</span><span class="pill">iOS</span><span class="pill">Android</span></div>
+        </div>
+        <div class="channel-visual"><div class="big-icon">☎️</div></div>
+      </div>
+
+      <div class="channel-panel" data-panel="chat">
+        <div>
+          <h3>💬 Chat</h3>
+          <p>Persistent, multi-party chat threads with typing indicators, read receipts, message history and file/image support.</p>
+          <ul>
+            <li>Group threads with 250+ participants</li>
+            <li>Message history &amp; edit/delete semantics</li>
+            <li>Event notifications for presence &amp; typing</li>
+            <li>Pairs with Teams interop for hybrid threads</li>
+          </ul>
+          <div><span class="pill">.NET</span><span class="pill">Java</span><span class="pill">Python</span><span class="pill">JavaScript</span><span class="pill">iOS</span><span class="pill">Android</span></div>
+        </div>
+        <div class="channel-visual"><div class="big-icon">💬</div></div>
+      </div>
+
+      <div class="channel-panel" data-panel="video">
+        <div>
+          <h3>🎥 Voice &amp; Video Calling</h3>
+          <p>Embed high-quality 1:1 and group audio/video calls into web, iOS and Android apps using the Calling SDK or the drop-in UI Library.</p>
+          <ul>
+            <li>HD audio/video, screen share, raw media access</li>
+            <li>Background blur, noise suppression, closed captions</li>
+            <li>Join Teams meetings as a custom-branded user</li>
+            <li>Composable UI Library for React, iOS &amp; Android</li>
+          </ul>
+          <div><span class="pill">JavaScript</span><span class="pill">iOS</span><span class="pill">Android</span><span class="pill">Windows</span></div>
+        </div>
+        <div class="channel-visual"><div class="big-icon">🎥</div></div>
+      </div>
+
+      <div class="channel-panel" data-panel="messaging">
+        <div>
+          <h3>✨ Advanced Messaging</h3>
+          <p>Reach customers where they already are — send and receive messages over WhatsApp Business and other third-party channels through a unified API.</p>
+          <ul>
+            <li>WhatsApp Business: templates, media, two-way</li>
+            <li>Single identity across channels</li>
+            <li>Delivery receipts and analytics</li>
+            <li>Roadmap includes additional OTT channels</li>
+          </ul>
+          <div><span class="pill">.NET</span><span class="pill">Java</span><span class="pill">Python</span><span class="pill">JavaScript</span></div>
+        </div>
+        <div class="channel-visual"><div class="big-icon">✨</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============= OTHER SERVICES ============= -->
+<section id="services" class="block">
+  <div class="section-head reveal">
+    <div class="kicker">Other services</div>
+    <h2>Explore additional ACS capabilities</h2>
+    <p>Beyond the channels, ACS ships higher-level building blocks for interop, automation, UI and diagnostics.</p>
+  </div>
+
+  <div class="services">
+    <div class="service reveal">
+      <div class="icon">🤝</div>
+      <h4>Teams Interoperability</h4>
+      <p>Let your apps and users participate in Microsoft Teams calls, meetings and chats — with your own branded experience.</p>
+      <a class="learn" href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/teams-interop" target="_blank" rel="noopener">Learn more →</a>
+    </div>
+    <div class="service reveal delay-1">
+      <div class="icon">⚙️</div>
+      <h4>Call Automation</h4>
+      <p>Server-side APIs to build intelligent calling workflows — IVR, routing, recording, transcription and AI-driven call flows.</p>
+      <a class="learn" href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/call-automation/call-automation" target="_blank" rel="noopener">Learn more →</a>
+    </div>
+    <div class="service reveal delay-2">
+      <div class="icon">🎨</div>
+      <h4>UI Library</h4>
+      <p>Production-ready, accessible React / iOS / Android components for calling and chat — ship a polished UX fast.</p>
+      <a class="learn" href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/ui-library/ui-library-overview" target="_blank" rel="noopener">Learn more →</a>
+    </div>
+    <div class="service reveal delay-3">
+      <div class="icon">🧭</div>
+      <h4>Job Router</h4>
+      <p>Route each customer interaction to the right agent using a flexible engine of queues, workers and rule-based policies.</p>
+      <a class="learn" href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/router/concepts" target="_blank" rel="noopener">Learn more →</a>
+    </div>
+    <div class="service reveal delay-4">
+      <div class="icon">🔍</div>
+      <h4>Call Diagnostics</h4>
+      <p>Visual tooling in the Azure portal to debug media quality, connectivity and call setup issues — with per-participant telemetry.</p>
+      <a class="learn" href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/voice-video-calling/call-diagnostics" target="_blank" rel="noopener">Learn more →</a>
+    </div>
+    <div class="service reveal delay-4">
+      <div class="icon">🔐</div>
+      <h4>Identity &amp; Access</h4>
+      <p>Issue short-lived access tokens per user, with scopes per channel — integrates with Entra ID for enterprise identity.</p>
+      <a class="learn" href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/authentication" target="_blank" rel="noopener">Learn more →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============= PRICING ============= -->
+<section id="pricing" class="block">
+  <div class="section-head reveal">
+    <div class="kicker">Pricing</div>
+    <h2>Pay only for what you use</h2>
+    <p>Azure Communication Services is fully consumption-based — no upfront commitments, no per-seat licensing. <a href="https://azure.microsoft.com/en-us/pricing/details/communication-services/" target="_blank" rel="noopener">See full pricing on Azure →</a></p>
+  </div>
+
+  <!-- Region & currency filter -->
+  <div class="price-filter reveal">
+    <div class="pf-field">
+      <label for="pf-region">Region</label>
+      <select id="pf-region">
+        <option value="east-us-2" selected>East US 2</option>
+        <option value="east-us">East US</option>
+        <option value="west-us-2">West US 2</option>
+        <option value="west-us-3">West US 3</option>
+        <option value="central-us">Central US</option>
+        <option value="north-europe">North Europe</option>
+        <option value="west-europe">West Europe</option>
+        <option value="uk-south">UK South</option>
+        <option value="france-central">France Central</option>
+        <option value="germany-west-central">Germany West Central</option>
+        <option value="switzerland-north">Switzerland North</option>
+        <option value="sweden-central">Sweden Central</option>
+        <option value="canada-central">Canada Central</option>
+        <option value="brazil-south">Brazil South</option>
+        <option value="southeast-asia">Southeast Asia</option>
+        <option value="japan-east">Japan East</option>
+        <option value="australia-east">Australia East</option>
+        <option value="india-central">Central India</option>
+        <option value="uae-north">UAE North</option>
+      </select>
+    </div>
+    <div class="pf-field">
+      <label for="pf-currency">Currency</label>
+      <select id="pf-currency">
+        <option value="USD" selected>US Dollar ($)</option>
+        <option value="EUR">Euro (€)</option>
+        <option value="GBP">British Pound (£)</option>
+        <option value="JPY">Japanese Yen (¥)</option>
+        <option value="CAD">Canadian Dollar (CA$)</option>
+        <option value="AUD">Australian Dollar (A$)</option>
+        <option value="INR">Indian Rupee (₹)</option>
+        <option value="BRL">Brazilian Real (R$)</option>
+        <option value="CHF">Swiss Franc (CHF)</option>
+        <option value="SEK">Swedish Krona (kr)</option>
+        <option value="AED">UAE Dirham (AED)</option>
+      </select>
+    </div>
+    <p class="pf-note">Showing rates for <strong id="pf-region-label">East US 2</strong> in <strong id="pf-currency-label">USD</strong>. Prices are estimates — actual pricing depends on your Microsoft agreement, purchase date, and currency exchange rate. PSTN, SMS, and phone-number leasing prices vary by country and are shown as "Varies" above; use the <a href="https://azure.microsoft.com/en-us/pricing/calculator/?service=communication-services" target="_blank" rel="noopener">Azure pricing calculator</a> for an exact quote.</p>
+  </div>
+
+  <div class="pricing-grid">
+
+    <!-- Calling -->
+    <div class="price-card reveal">
+      <div class="price-head">
+        <div class="price-icon">📞</div>
+        <div>
+          <h4>Calling</h4>
+          <div class="price-sub">Voice &amp; video, PSTN, recording</div>
+        </div>
+      </div>
+      <ul class="price-list">
+        <li>
+          <span class="pl-label">Voice &amp; Video over IP <small>Per participant, per minute</small></span>
+          <span class="pl-value highlight" data-usd="0.004">$0.004</span>
+        </li>
+        <li>
+          <span class="pl-label">PSTN calling <small>Inbound &amp; outbound, per country</small></span>
+          <span class="pl-value vary">Varies</span>
+        </li>
+        <li>
+          <span class="pl-label">Call recording — mixed audio <small>Per minute</small></span>
+          <span class="pl-value" data-usd="0.002">$0.002</span>
+        </li>
+        <li>
+          <span class="pl-label">Mixed audio + video recording <small>Per minute</small></span>
+          <span class="pl-value" data-usd="0.01">$0.01</span>
+        </li>
+        <li>
+          <span class="pl-label">Unmixed audio recording <small>Per participant minute</small></span>
+          <span class="pl-value" data-usd="0.0012">$0.0012</span>
+        </li>
+        <li>
+          <span class="pl-label">Closed captions <small>Per minute</small></span>
+          <span class="pl-value" data-usd="0.021">$0.021</span>
+        </li>
+        <li>
+          <span class="pl-label">SIP Direct Routing <small>Inbound &amp; outbound, per minute</small></span>
+          <span class="pl-value" data-usd="0.004">$0.004</span>
+        </li>
+        <li>
+          <span class="pl-label">Audio streaming <small>Mixed / unmixed / insights, per minute</small></span>
+          <span class="pl-value" data-usd="0.004">$0.004</span>
+        </li>
+      </ul>
+      <a class="price-foot" href="https://azure.microsoft.com/en-us/pricing/details/communication-services/" target="_blank" rel="noopener">See calling rates</a>
+    </div>
+
+    <!-- Messaging -->
+    <div class="price-card reveal delay-1">
+      <div class="price-head">
+        <div class="price-icon">💬</div>
+        <div>
+          <h4>Messaging</h4>
+          <div class="price-sub">Email, SMS, Chat</div>
+        </div>
+      </div>
+      <ul class="price-list">
+        <li>
+          <span class="pl-label">Email — send <small>Per email</small></span>
+          <span class="pl-value highlight" data-usd="0.00025">$0.00025</span>
+        </li>
+        <li>
+          <span class="pl-label">Email — data transfer <small>Per MB sent</small></span>
+          <span class="pl-value" data-usd="0.00012">$0.00012</span>
+        </li>
+        <li>
+          <span class="pl-label">SMS <small>Per message, varies by country</small></span>
+          <span class="pl-value vary">Varies</span>
+        </li>
+        <li>
+          <span class="pl-label">Advanced Messaging <small>WhatsApp, per country &amp; template</small></span>
+          <span class="pl-value vary">Varies</span>
+        </li>
+        <li>
+          <span class="pl-label">Chat — Teams endpoints <small>With M365 license</small></span>
+          <span class="pl-value highlight">Free</span>
+        </li>
+      </ul>
+      <a class="price-foot" href="https://azure.microsoft.com/en-us/pricing/details/communication-services/" target="_blank" rel="noopener">See messaging rates</a>
+    </div>
+
+    <!-- Phone numbers + Routing -->
+    <div class="price-card reveal delay-2">
+      <div class="price-head">
+        <div class="price-icon">☎️</div>
+        <div>
+          <h4>Phone numbers &amp; Routing</h4>
+          <div class="price-sub">Leasing, lookup, Job Router</div>
+        </div>
+      </div>
+      <ul class="price-list">
+        <li>
+          <span class="pl-label">Geographic number leasing <small>Per number, per month</small></span>
+          <span class="pl-value vary">Varies</span>
+        </li>
+        <li>
+          <span class="pl-label">Toll-free number leasing <small>Per number, per month</small></span>
+          <span class="pl-value vary">Varies</span>
+        </li>
+        <li>
+          <span class="pl-label">Number lookup <small>Line-type identification, per request</small></span>
+          <span class="pl-value" data-usd="0.005">$0.005</span>
+        </li>
+        <li>
+          <span class="pl-label">Job Router — first 100 jobs / month</span>
+          <span class="pl-value highlight">Free</span>
+        </li>
+        <li>
+          <span class="pl-label">Job Router — beyond free tier <small>Per job routed</small></span>
+          <span class="pl-value" data-usd="0.01">$0.01</span>
+        </li>
+      </ul>
+      <a class="price-foot" href="https://azure.microsoft.com/en-us/pricing/details/communication-services/" target="_blank" rel="noopener">See number &amp; routing rates</a>
+    </div>
+
+  </div>
+
+  <!-- Worked example: Order confirmation emails -->
+  <div class="price-example reveal">
+    <div class="pe-body">
+      <div class="pe-kicker">Worked example</div>
+      <h3>Order confirmation &amp; shipping emails</h3>
+      <p>A retail app sends two transactional emails per purchase — an order confirmation and a shipping notification — across 500,000 monthly purchases. Each email averages 0.2&nbsp;MB.</p>
+    </div>
+    <div class="pe-calc">
+      <div class="pe-calc-row">
+        <span class="pc-lbl">Emails sent</span>
+        <span class="pc-val">1,000,000</span>
+      </div>
+      <div class="pe-calc-row">
+        <span class="pc-lbl">Send cost (1M × <span data-usd="0.00025">$0.00025</span>)</span>
+        <span class="pc-val" data-usd="250">$250.00</span>
+      </div>
+      <div class="pe-calc-row">
+        <span class="pc-lbl">Data cost (1M × 0.2 MB × <span data-usd="0.00012">$0.00012</span>)</span>
+        <span class="pc-val" data-usd="24">$24.00</span>
+      </div>
+      <div class="pe-calc-total">
+        <span class="pct-lbl">Total per month</span>
+        <span class="pct-val" data-usd="274">$274</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="price-note reveal">
+    <strong>Teams interoperability is free for Teams endpoints.</strong> When Microsoft Teams users join a call or chat built on Azure Communication Services, their VoIP and chat usage is covered by their existing M365 license — you are billed only for the ACS participants on the other side.
+  </div>
+
+  <div class="price-cta reveal">
+    <a class="btn btn-primary" href="https://azure.microsoft.com/en-us/pricing/calculator/?service=communication-services" target="_blank" rel="noopener">Open pricing calculator →</a>
+    <a class="btn btn-ghost" href="https://azure.microsoft.com/en-us/pricing/details/communication-services/" target="_blank" rel="noopener">View full pricing page</a>
+  </div>
+</section>
+
+<!-- ============= REFERENCE ============= -->
+<section id="reference" class="block tinted">
+  <div class="section-head reveal">
+    <div class="kicker">Reference</div>
+    <h2>SDKs &amp; REST APIs</h2>
+    <p>Build in the language and platform you already use. Every capability is accessible through both native SDKs and language-neutral REST.</p>
+  </div>
+
+  <div class="ref-wrap">
+    <div class="ref-card reveal">
+      <h3>Client &amp; Server SDKs</h3>
+      <p style="color:var(--ms-gray-700);">First-class SDKs across your stack, versioned on NuGet, npm, Maven, PyPI and CocoaPods.</p>
+      <div class="chips">
+        <span class="chip"><span class="dot-lang" style="background:#512BD4"></span>.NET</span>
+        <span class="chip"><span class="dot-lang" style="background:#F7DF1E"></span>JavaScript / TypeScript</span>
+        <span class="chip"><span class="dot-lang" style="background:#E76F00"></span>Java</span>
+        <span class="chip"><span class="dot-lang" style="background:#3776AB"></span>Python</span>
+        <span class="chip"><span class="dot-lang" style="background:#000"></span>Swift / iOS</span>
+        <span class="chip"><span class="dot-lang" style="background:#3DDC84"></span>Kotlin / Android</span>
+        <span class="chip"><span class="dot-lang" style="background:#0078D4"></span>PowerShell</span>
+      </div>
+      <p style="margin-top:18px;"><a href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/reference" target="_blank" rel="noopener">Browse SDK reference →</a></p>
+    </div>
+    <div class="ref-card reveal delay-2">
+      <h3>REST API</h3>
+      <p style="color:var(--ms-gray-700);">Language-neutral HTTP/JSON APIs for every channel, versioned with stable &amp; preview contracts.</p>
+      <div class="chips">
+        <span class="chip">Identity</span>
+        <span class="chip">Email</span>
+        <span class="chip">SMS</span>
+        <span class="chip">Chat</span>
+        <span class="chip">Calling</span>
+        <span class="chip">Call Automation</span>
+        <span class="chip">Job Router</span>
+        <span class="chip">Advanced Messaging</span>
+      </div>
+      <p style="margin-top:18px;"><a href="https://learn.microsoft.com/en-us/rest/api/communication/" target="_blank" rel="noopener">Browse REST reference →</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= TRAINING ============= -->
+<section id="training" class="block">
+  <div class="section-head reveal">
+    <div class="kicker">Training</div>
+    <h2>Learn by doing</h2>
+    <p>Guided learning paths, hands-on modules and focused quickstarts — curated from the official Azure documentation.</p>
+  </div>
+
+  <div class="training">
+    <a class="train-card reveal" href="https://learn.microsoft.com/en-us/training/modules/intro-azure-communication-services/" target="_blank" rel="noopener">
+      <span class="tag">Learning path</span>
+      <h4>Introduction to Azure Communication Services</h4>
+      <p>Understand what ACS is, how it fits alongside Microsoft Teams, and where each channel shines.</p>
+      <div class="meta">~45 min · Beginner</div>
+    </a>
+    <a class="train-card reveal delay-1" href="https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email" target="_blank" rel="noopener">
+      <span class="tag">Module</span>
+      <h4>Send your first email with ACS</h4>
+      <p>Create a resource, verify a domain, and send a test email using the .NET SDK.</p>
+      <div class="meta">~25 min · Beginner</div>
+    </a>
+    <a class="train-card reveal delay-2" href="https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/ui-library/get-started-composites" target="_blank" rel="noopener">
+      <span class="tag">Module</span>
+      <h4>Build a calling experience with the UI Library</h4>
+      <p>Embed a production-ready calling UI in a React app in under an hour.</p>
+      <div class="meta">~50 min · Intermediate</div>
+    </a>
+    <a class="train-card reveal" href="https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/sms/send" target="_blank" rel="noopener">
+      <span class="tag">Quickstart</span>
+      <h4>Send an SMS with ACS</h4>
+      <p>Provision a number, authenticate and deliver your first SMS in a few lines of code.</p>
+      <div class="meta">~15 min · Beginner</div>
+    </a>
+    <a class="train-card reveal delay-1" href="https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/voice-video-calling/get-started-teams-interop" target="_blank" rel="noopener">
+      <span class="tag">Quickstart</span>
+      <h4>Join a Teams meeting from a custom app</h4>
+      <p>Use Teams interop to let your application's users join Teams meetings seamlessly.</p>
+      <div class="meta">~30 min · Intermediate</div>
+    </a>
+    <a class="train-card reveal delay-2" href="https://learn.microsoft.com/en-us/azure/communication-services/how-tos/call-automation/real-time-transcription-tutorial" target="_blank" rel="noopener">
+      <span class="tag">Advanced</span>
+      <h4>Automate calls with AI</h4>
+      <p>Combine Call Automation with Azure AI for real-time transcription and summarization.</p>
+      <div class="meta">~75 min · Advanced</div>
+    </a>
+  </div>
+</section>
+
+<!-- ============= SUPPORT ============= -->
+<section id="support" class="block tinted">
+  <div class="section-head reveal">
+    <div class="kicker">Support &amp; Help</div>
+    <h2>We're here when you need us</h2>
+    <p>From quick community answers to a formal Azure support case — pick the channel that matches the urgency and complexity of your issue.</p>
+  </div>
+
+  <div class="support-grid">
+    <div class="support-card reveal">
+      <div class="icon-lg">💡</div>
+      <h4>Share feedback</h4>
+      <p>Shape the roadmap. Submit feature requests, vote on ideas, and track what Microsoft is building next through the official Azure feedback portal.</p>
+      <a class="support-link" href="https://feedback.azure.com/d365community" target="_blank" rel="noopener">Provide feedback</a>
+    </div>
+    <div class="support-card reveal delay-1">
+      <div class="icon-lg">💬</div>
+      <h4>Ask the community</h4>
+      <p>Get answers from Microsoft engineers, MVPs and a global developer community on Microsoft Q&amp;A — the fastest path for how-to and design questions.</p>
+      <a class="support-link" href="https://learn.microsoft.com/en-us/answers/" target="_blank" rel="noopener">Ask on Microsoft Q&amp;A</a>
+    </div>
+    <div class="support-card reveal delay-2">
+      <div class="icon-lg">🛟</div>
+      <h4>Open a support case</h4>
+      <p>For production issues, billing questions or items requiring account-level investigation, open a formal Azure support request and engage Microsoft engineers directly.</p>
+      <a class="support-link" href="https://learn.microsoft.com/en-us/azure/azure-portal/supportability/how-to-create-azure-support-request" target="_blank" rel="noopener">Create a support request</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============= FOOTER ============= -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="brand" style="color:#fff;margin-bottom:14px;">
+        <svg viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px;">
+          <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
+          <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
+          <rect x="1" y="13" width="10" height="10" fill="#00A4EF"/>
+          <rect x="13" y="13" width="10" height="10" fill="#FFB900"/>
+        </svg>
+        <span style="font-weight:600;">Azure Communication Services</span>
+      </div>
+      <p style="max-width:380px;">An interactive overview of the unified communication platform — voice, video, chat, SMS, email and Teams interoperability, delivered as composable cloud APIs.</p>
+    </div>
+    <div>
+      <h5>Explore</h5>
+      <a href="https://learn.microsoft.com/en-us/azure/communication-services/overview" target="_blank" rel="noopener">Overview</a>
+      <a href="https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/create-communication-resource" target="_blank" rel="noopener">Quickstarts</a>
+      <a href="https://learn.microsoft.com/en-us/azure/communication-services/tutorials/building-app-start" target="_blank" rel="noopener">Tutorials</a>
+      <a href="https://learn.microsoft.com/en-us/azure/communication-services/samples/overview" target="_blank" rel="noopener">Samples</a>
+    </div>
+    <div>
+      <h5>Reference</h5>
+      <a href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/reference" target="_blank" rel="noopener">SDK reference</a>
+      <a href="https://learn.microsoft.com/en-us/rest/api/communication/" target="_blank" rel="noopener">REST API</a>
+      <a href="https://learn.microsoft.com/en-us/azure/communication-services/concepts/service-limits" target="_blank" rel="noopener">Service limits</a>
+      <a href="https://azure.microsoft.com/en-us/pricing/details/communication-services/" target="_blank" rel="noopener">Pricing</a>
+    </div>
+    <div>
+      <h5>Support</h5>
+      <a href="https://feedback.azure.com/d365community" target="_blank" rel="noopener">Azure feedback</a>
+      <a href="https://learn.microsoft.com/en-us/answers/" target="_blank" rel="noopener">Microsoft Q&amp;A</a>
+      <a href="https://learn.microsoft.com/en-us/azure/azure-portal/supportability/how-to-create-azure-support-request" target="_blank" rel="noopener">Create a support request</a>
+      <a href="https://techcommunity.microsoft.com/category/azure/discussions/azurecommunicationservices" target="_blank" rel="noopener">Tech Community</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Based on <a href="https://learn.microsoft.com/en-us/azure/communication-services/" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;">Azure Communication Services documentation</a> — Microsoft Learn</span>
+    <span>Interactive learning infographic · April 2026</span>
+  </div>
+</footer>
+
+<script>
+  // ----- Scroll progress bar -----
+  const prog = document.getElementById('scrollProgress');
+  function updateProgress() {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    prog.style.width = Math.min(100, Math.max(0, scrolled * 100)) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // ----- Reveal on scroll -----
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ----- Count-up for hero KPI numeric cells -----
+  const countUp = (el, target, suffix = '', duration = 1200) => {
+    const isInt = Number.isInteger(target);
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const v = target * eased;
+      el.textContent = (isInt ? Math.round(v).toLocaleString() : v.toFixed(1)) + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = (isInt ? target.toLocaleString() : target.toFixed(1)) + suffix;
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const kpiObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      countUp(el, target, suffix);
+      kpiObs.unobserve(el);
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('[data-target]').forEach(el => kpiObs.observe(el));
+
+  // ----- Channel tabs -----
+  const tabs   = document.querySelectorAll('.channel-tab');
+  const panels = document.querySelectorAll('.channel-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const t = tab.dataset.tab;
+      tabs.forEach(x => x.classList.toggle('active', x === tab));
+      panels.forEach(p => p.classList.toggle('active', p.dataset.panel === t));
+    });
+  });
+
+  // ----- Keyboard nav for tabs -----
+  const tabList = Array.from(tabs);
+  tabList.forEach((tab, i) => {
+    tab.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const dir = e.key === 'ArrowRight' ? 1 : -1;
+        const next = tabList[(i + dir + tabList.length) % tabList.length];
+        next.focus(); next.click();
+      }
+    });
+  });
+
+  // ----- Pricing: region + currency dropdowns -----
+  // Approximate FX rates vs USD (illustrative, not live). Based on recent market averages.
+  const FX = {
+    USD: { rate: 1,       symbol: '$',    decimals: 2, prefix: true  },
+    EUR: { rate: 0.92,    symbol: '€',    decimals: 2, prefix: true  },
+    GBP: { rate: 0.79,    symbol: '£',    decimals: 2, prefix: true  },
+    JPY: { rate: 151,     symbol: '¥',    decimals: 0, prefix: true  },
+    CAD: { rate: 1.36,    symbol: 'CA$',  decimals: 2, prefix: true  },
+    AUD: { rate: 1.52,    symbol: 'A$',   decimals: 2, prefix: true  },
+    INR: { rate: 83.5,    symbol: '₹',    decimals: 2, prefix: true  },
+    BRL: { rate: 5.05,    symbol: 'R$',   decimals: 2, prefix: true  },
+    CHF: { rate: 0.89,    symbol: 'CHF ', decimals: 2, prefix: true  },
+    SEK: { rate: 10.45,   symbol: ' kr',  decimals: 2, prefix: false },
+    AED: { rate: 3.67,    symbol: 'AED ', decimals: 2, prefix: true  }
+  };
+
+  function fmtPrice(usd, code) {
+    const c = FX[code] || FX.USD;
+    const v = usd * c.rate;
+    // Preserve sub-cent precision for micro-rates (< 0.01 USD).
+    let decimals;
+    if (usd < 0.001) decimals = 5;
+    else if (usd < 0.01) decimals = 4;
+    else if (usd < 1)    decimals = 3;
+    else if (code === 'JPY') decimals = 0;
+    else decimals = c.decimals;
+    const n = v.toLocaleString('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+    return c.prefix ? `${c.symbol}${n}` : `${n}${c.symbol}`;
+  }
+
+  const regionSel   = document.getElementById('pf-region');
+  const currencySel = document.getElementById('pf-currency');
+  const regionLbl   = document.getElementById('pf-region-label');
+  const currencyLbl = document.getElementById('pf-currency-label');
+
+  function applyPricingFilters() {
+    const cur = currencySel.value;
+    document.querySelectorAll('[data-usd]').forEach(el => {
+      const usd = parseFloat(el.dataset.usd);
+      if (!isNaN(usd)) el.textContent = fmtPrice(usd, cur);
+    });
+    regionLbl.textContent   = regionSel.options[regionSel.selectedIndex].text;
+    currencyLbl.textContent = cur;
+  }
+
+  if (regionSel && currencySel) {
+    regionSel.addEventListener('change', applyPricingFilters);
+    currencySel.addEventListener('change', applyPricingFilters);
+  }
+</script>
+
+</body>
+</html>
