@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which AI coding agent fits which team?</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gh-ink: #24292E; --gh-ink-2: #1B1F23;
+    --gh-accent: #2DA44E; --gh-blue: #0969DA;
+    --gh-muted: #57606A; --gh-border: #D0D7DE;
+    --gh-surface: #F6F8FA; --gh-card: #FFFFFF;
+    --gh-warn: #9A6700;
+    --radius: 10px; --shadow: 0 1px 3px rgba(27,31,36,.08), 0 4px 12px rgba(27,31,36,.06);
+  }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--gh-ink); background: var(--gh-surface); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: var(--gh-blue); text-decoration: none; } a:hover { text-decoration: underline; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  .hero { background: linear-gradient(135deg, #24292E 0%, #1B1F23 55%, #0B1014 100%);
+    color: #fff; padding: 80px 24px 64px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(45,164,78,.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(9,105,218,.10) 0%, transparent 55%); pointer-events: none; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px;
+    border-radius: 20px; background: rgba(255,255,255,.10); font-size: .78rem; font-weight: 600;
+    letter-spacing: .4px; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    margin-bottom: 20px; border: 1px solid rgba(255,255,255,.12); }
+  .hero-badge svg { width: 14px; height: 14px; fill: #2DA44E; }
+  .hero h1 { font-size: clamp(1.9rem, 4.2vw, 2.8rem); font-weight: 700; line-height: 1.15;
+    max-width: 820px; margin: 0 auto 14px; }
+  .hero p { font-size: 1.05rem; opacity: .85; max-width: 680px; margin: 0 auto; }
+  .hero-meta { margin-top: 24px; font-size: .8rem; opacity: .6; letter-spacing: .3px; }
+  section { padding: 56px 0; }
+  .section-label { display: inline-block; font-size: .72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em; color: var(--gh-accent); margin-bottom: 8px; }
+  .section-title { font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 700;
+    margin-bottom: 10px; color: var(--gh-ink); }
+  .section-sub { color: var(--gh-muted); max-width: 720px; margin-bottom: 32px; }
+  .section-flush-top { padding-top: 0; }
+  .tree-gap { margin-top: 20px; }
+
+  .picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 720px) { .picker { grid-template-columns: 1fr; } }
+  .tool-card { background: var(--gh-card); border: 1px solid var(--gh-border);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+    display: flex; flex-direction: column; }
+  .tool-card header { background: var(--gh-ink); color: #fff; padding: 16px 20px; }
+  .tool-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+  .tool-card header .sub { font-size: .78rem; opacity: .7; }
+  .tool-card .body { padding: 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .tool-card .fit { font-size: .9rem; color: var(--gh-ink); }
+  .tool-card .fit strong { color: var(--gh-accent); }
+  .tool-card .not-fit { font-size: .88rem; color: var(--gh-muted); }
+  .tool-card .not-fit strong { color: var(--gh-warn); }
+  .tool-card ul { padding-left: 18px; font-size: .88rem; }
+  .tool-card ul li { margin-bottom: 4px; }
+
+  .tree { background: var(--gh-card); border: 1px solid var(--gh-border);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+  .tree-q { font-weight: 700; font-size: 1rem; color: var(--gh-ink); margin-bottom: 10px; }
+  .tree-row { display: grid; grid-template-columns: 160px 1fr; gap: 12px; padding: 10px 0;
+    border-top: 1px solid var(--gh-border); align-items: start; }
+  .tree-row:first-of-type { border-top: 0; }
+  .tree-row .ans { font-weight: 600; color: var(--gh-blue); font-size: .9rem; }
+  .tree-row .out { font-size: .9rem; color: var(--gh-ink); }
+  @media (max-width: 640px) {
+    .tree-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  .callout { background: var(--gh-card); border: 1px solid var(--gh-border);
+    border-left: 4px solid var(--gh-warn); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow); margin-top: 24px; }
+  .callout h3 { font-size: 1.05rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .callout h3 svg { width: 18px; height: 18px; flex: 0 0 auto; }
+  .callout ul { padding-left: 18px; }
+  .callout li { margin-bottom: 8px; font-size: .92rem; }
+
+  footer { background: var(--gh-ink); color: #C9D1D9; padding: 40px 24px;
+    font-size: .85rem; line-height: 1.7; }
+  footer .container { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
+  @media (max-width: 720px) { footer .container { grid-template-columns: 1fr; } }
+  footer a { color: #58A6FF; }
+  footer h4 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: #fff; margin-bottom: 10px; }
+  .disclosure { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.12);
+    font-size: .78rem; color: #8B949E; }
+  .sources-list { list-style: none; padding: 0; }
+  .sources-list li { margin-bottom: 6px; font-size: .82rem; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-badge">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm3.78 5.97L7.5 10.25l-2.28-2.28a.75.75 0 10-1.06 1.06l2.81 2.81a.75.75 0 001.06 0l4.81-4.81a.75.75 0 10-1.06-1.06z"/></svg>
+    Platform engineering · Compete landscape
+  </div>
+  <h1>Which AI coding agent fits which team?</h1>
+  <p>Not a ranking. A short decision tree plus four honest "when each one wins" cards. Skip this piece if you already know which vendor you're buying.</p>
+  <div class="hero-meta">Accurate as of April 2026 · Async, issue-triggered agents only (not IDE copilots)</div>
+</header>
+
+<section>
+  <div class="container">
+    <span class="section-label">Start here</span>
+    <h2 class="section-title">Three questions in order</h2>
+    <p class="section-sub">Most teams short-circuit at question 1 or 2. If you're still undecided after question 3, your real constraint is probably organizational, not technical.</p>
+
+    <div class="tree">
+      <div class="tree-q">Q1 · Is GitHub.com your primary code host?</div>
+      <div class="tree-row"><div class="ans">No</div><div class="out">Stop here. Codex, Cursor Cloud Agents, and Copilot cloud agent all require GitHub-hosted repos. Claude Code Action is GitHub-only too. Your shortlist is <em>IDE-native</em> agents, not async ones — different category.</div></div>
+      <div class="tree-row"><div class="ans">Yes</div><div class="out">Continue to Q2.</div></div>
+    </div>
+
+    <div class="tree tree-gap">
+      <div class="tree-q">Q2 · Do you already pay for Copilot Business or Enterprise?</div>
+      <div class="tree-row"><div class="ans">Yes</div><div class="out">Default to <strong>Copilot cloud agent</strong> for async issue→PR work. Zero per-repo setup. Keep a second tool around for the cases below.</div></div>
+      <div class="tree-row"><div class="ans">No, and we won't</div><div class="out">Continue to Q3. Copilot cloud agent requires a Copilot seat; you'll be choosing between the three remaining tools.</div></div>
+    </div>
+
+    <div class="tree tree-gap">
+      <div class="tree-q">Q3 · What matters most?</div>
+      <div class="tree-row"><div class="ans">Specific model</div><div class="out">If you need Claude Opus/Sonnet specifically: <strong>Claude Code Action</strong>. If GPT-5: <strong>Codex</strong>. If a model pool auto-routed: <strong>Cursor Cloud Agents</strong>.</div></div>
+      <div class="tree-row"><div class="ans">Lowest per-repo friction</div><div class="out"><strong>Codex</strong> or <strong>Cursor</strong> — no workflow YAML in-repo, per-repo toggle in their dashboards.</div></div>
+      <div class="tree-row"><div class="ans">Keep governance in GitHub</div><div class="out"><strong>Claude Code Action</strong> — it's a standard Actions workflow, so the audit trail, secret management, and permission model stay in GitHub.</div></div>
+      <div class="tree-row"><div class="ans">IDE ↔ cloud parity</div><div class="out"><strong>Cursor Cloud Agents</strong> — same agent UX in the editor and in the cloud; Slack/Linear triggers bundled.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-flush-top">
+  <div class="container">
+    <span class="section-label">Honest fit</span>
+    <h2 class="section-title">When each one actually wins</h2>
+    <p class="section-sub">Every tool below has a real niche. The question is which niche looks like your team.</p>
+
+    <div class="picker">
+
+      <div class="tool-card">
+        <header><h3>GitHub Copilot cloud agent</h3><div class="sub">First-party · Copilot Business/Enterprise</div></header>
+        <div class="body">
+          <div class="fit"><strong>Best fit:</strong> org already on Copilot, many repos, governance in GitHub, platform team wants agent adoption off their queue.</div>
+          <div class="not-fit"><strong>Worst fit:</strong> you need a specific non-Anthropic non-OpenAI model, or you've explicitly rejected Copilot for procurement reasons.</div>
+          <ul>
+            <li>Zero per-repo files required</li>
+            <li>First-party bot identity in git log</li>
+            <li>Audit trail in GitHub's existing surfaces</li>
+            <li>Uses Actions minutes + Copilot premium requests</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <header><h3>Claude Code Action</h3><div class="sub">Anthropic · GitHub App + workflow</div></header>
+        <div class="body">
+          <div class="fit"><strong>Best fit:</strong> team already trusts Claude for code, wants governance in GitHub Actions, OK shipping a workflow file per repo.</div>
+          <div class="not-fit"><strong>Worst fit:</strong> 50+ repos where per-repo workflow fan-out is painful, or org policy blocks third-party GitHub Apps.</div>
+          <ul>
+            <li>Workflow YAML + <code>ANTHROPIC_API_KEY</code> per repo</li>
+            <li>Responds to <code>@claude</code> in issue/PR comments</li>
+            <li>Runs on your own GitHub runners</li>
+            <li>Supports Bedrock, Vertex AI, Microsoft Foundry</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <header><h3>OpenAI Codex in GitHub</h3><div class="sub">External SaaS · ChatGPT account</div></header>
+        <div class="body">
+          <div class="fit"><strong>Best fit:</strong> teams already in ChatGPT for dev work, want <code>@codex review</code> on PRs without writing Actions YAML, OK with governance in ChatGPT.</div>
+          <div class="not-fit"><strong>Worst fit:</strong> regulated orgs that need every agent action auditable inside GitHub's own logs, not a vendor dashboard.</div>
+          <ul>
+            <li>No workflow file needed</li>
+            <li>Per-repo toggle in ChatGPT Codex settings</li>
+            <li>Optional <code>AGENTS.md</code> for review guidelines</li>
+            <li>Auto-review mode for every PR opt-in</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-card">
+        <header><h3>Cursor Cloud Agents</h3><div class="sub">External SaaS · Cursor team plan</div></header>
+        <div class="body">
+          <div class="fit"><strong>Best fit:</strong> Cursor IDE shop wanting the same agent UX in cloud; teams using Slack/Linear as primary issue surfaces, not GitHub.</div>
+          <div class="not-fit"><strong>Worst fit:</strong> teams not on Cursor IDE; orgs that restrict third-party R/W GitHub integrations.</div>
+          <ul>
+            <li>Triggered from Cursor web, Desktop, Slack, Linear, GitHub, API</li>
+            <li>Models always run in Max Mode</li>
+            <li>MCP + hooks support (<code>.cursor/hooks.json</code>)</li>
+            <li>Billed at API pricing per model</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <h3>
+        <svg viewBox="0 0 16 16" fill="#9A6700" aria-hidden="true"><path d="M8 1.45l6.705 11.55H1.295L8 1.45zm0-1.45L0 14h16L8 0zm1 11H7v-2h2v2zm0-3H7V5h2v3z"/></svg>
+        What this piece is not
+      </h3>
+      <ul>
+        <li><strong>Not a capability ranking.</strong> None of these cards claim one agent writes better code than another — that depends on your stack and benchmark.</li>
+        <li><strong>Not a pricing comparison.</strong> All four change pricing on months-long cycles; any dollar figure here would age fast.</li>
+        <li><strong>Not vendor-neutral on origin.</strong> The author is a Microsoft employee. The framing tries to be honest about where Copilot doesn't win.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div>
+      <h4>About this infographic</h4>
+      <p>A short decision tree for platform leads evaluating async AI coding agents on GitHub. Companion to the <a href="ai-agent-setup-cost.html">setup-cost comparison</a>. The claim is narrow: <strong>most teams can pick a default in 2 questions, and the remaining choice is about model preference and where governance lives.</strong></p>
+      <p class="disclosure">Produced by a Microsoft employee. Views are my own; not endorsed by GitHub, Anthropic, OpenAI, or Cursor.</p>
+    </div>
+    <div>
+      <h4>Primary sources</h4>
+      <ul class="sources-list">
+        <li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent">Copilot cloud agent</a></li>
+        <li><a href="https://code.claude.com/docs/en/github-actions">Claude Code GitHub Actions</a></li>
+        <li><a href="https://developers.openai.com/codex/cloud/code-review">Codex in GitHub</a></li>
+        <li><a href="https://cursor.com/docs/cloud-agent">Cursor Cloud Agents</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
