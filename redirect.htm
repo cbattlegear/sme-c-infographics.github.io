@@ -90,20 +90,10 @@
         return;
       }
 
-      // Append any utm_* params we received onto the destination so
-      // the destination's analytics can attribute the visit. We only
-      // forward known utm_* keys to avoid leaking other params.
-      var utmKeys = ["utm_source", "utm_medium", "utm_campaign",
-                     "utm_content", "utm_term"];
-      var destUrl = new URL(dest);
-      utmKeys.forEach(function (key) {
-        var value = params.get(key);
-        if (value) {
-          // setSearchParam: replace if present, append otherwise.
-          destUrl.searchParams.set(key, value);
-        }
-      });
-      var finalHref = destUrl.toString();
+      // The destination URL is used verbatim — UTM params live on the
+      // redirect link only, so our own Umami records the click but
+      // the visitor lands at a clean URL on the destination.
+      var finalHref = dest;
 
       // Update the manual fallback link so a visitor whose JS got far
       // enough to run this still ends up at the right place if the
