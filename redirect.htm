@@ -72,17 +72,17 @@
       var params = new URLSearchParams(window.location.search);
       var dest = (params.get("url") || "").trim();
 
-      function isSafeHttpUrl(value) {
+      function isSafeHttpsUrl(value) {
         if (!value) return false;
         try {
           var parsed = new URL(value);
-          return parsed.protocol === "http:" || parsed.protocol === "https:";
+          return parsed.protocol === "https:";
         } catch (_) {
           return false;
         }
       }
 
-      if (!isSafeHttpUrl(dest)) {
+      if (!isSafeHttpsUrl(dest)) {
         // Leave the meta-refresh fallback to send the visitor home.
         document.getElementById("manual").innerHTML =
           'No valid destination URL provided. Returning to the ' +

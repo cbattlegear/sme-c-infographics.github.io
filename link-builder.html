@@ -179,8 +179,9 @@
     </p>
 
     <form id="builder" autocomplete="off">
-      <label for="dest">Destination URL <span class="hint">(http or https)</span></label>
+      <label for="dest">Destination URL <span class="hint">(https only)</span></label>
       <input type="url" id="dest" name="dest" required
+             pattern="https://.*"
              placeholder="https://example.com/page" />
 
       <div class="row">
@@ -269,11 +270,10 @@
           setMsg("Please fill in URL, source, medium, and campaign.", false);
           return null;
         }
-        // Reject anything other than http/https up front so the
+        // Reject anything that isn't an https URL up front so the
         // redirect page can rely on the same allow-list.
-        var lower = dest.toLowerCase();
-        if (!(lower.indexOf("http://") === 0 || lower.indexOf("https://") === 0)) {
-          setMsg("URL must start with http:// or https://", false);
+        if (dest.toLowerCase().indexOf("https://") !== 0) {
+          setMsg("URL must start with https://", false);
           return null;
         }
 
