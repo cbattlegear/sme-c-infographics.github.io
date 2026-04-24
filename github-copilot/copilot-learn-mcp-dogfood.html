@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Copilot + Learn MCP: how this site stays accurate</title>
+<title>Copilot + Microsoft Learn: how this site stays accurate</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -95,15 +95,15 @@
     Dogfood evidence · This repo
   </div>
   <h1>How this site stays accurate, automatically</h1>
-  <p>A monthly loop: GitHub Actions fires, Copilot coding agent reads each page, consults Microsoft Learn via MCP, and drafts a PR if facts are stale. The human step is review, not research.</p>
+  <p>A scheduled loop: GitHub Actions fires, Copilot cloud agent reads each page, verifies claims against Microsoft Learn, and drafts a PR if facts are stale. The human step is review, not research.</p>
   <div class="hero-meta">Accurate as of April 2026 · Evidence: this repository's workflow history</div>
 </header>
 
 <div class="container">
   <div class="big-stat">
-    <div class="num">14</div>
-    <div class="num-sub">infographics under automated monthly accuracy review</div>
-    <div class="num-caption">Every page in this repo gets a scheduled Copilot-assigned issue. Copilot consults Microsoft Learn MCP, checks for stale facts, and drafts a PR if anything looks wrong. The workflow itself is ~300 lines of YAML — real infrastructure, not magic.</div>
+    <div class="num">20</div>
+    <div class="num-sub">pages under automated accuracy review</div>
+    <div class="num-caption">Every infographic gets a scheduled Copilot-assigned issue. Copilot reads the page, verifies claims against Microsoft Learn, and drafts a PR if anything looks stale. Two cooperating workflows in <code>.github/workflows/</code> — real infrastructure, not magic.</div>
   </div>
 </div>
 
@@ -118,27 +118,27 @@
         <div class="step">
           <div class="step-num">1</div>
           <h4>Scheduled trigger</h4>
-          <p>Cron in <code>copilot-page-review.yml</code> fires monthly. Caps at 25 issues per run.</p>
+          <p>Cron in <code>accuracy-review.yml</code> fires weekly (Thursday 07:00 UTC), caps at 10 issues per run.</p>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <h4>Issues created</h4>
-          <p>One issue per page, labeled <code>copilot-review</code>, assigned to <code>Copilot</code> via PAT.</p>
+          <p>One issue per stale page, labeled <code>copilot-review</code>, assigned to <code>Copilot</code> via a user-scoped PAT.</p>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <h4>Copilot picks up</h4>
-          <p>Coding agent detects assignment, spins an ephemeral Actions environment, reads the page.</p>
+          <p>Cloud agent detects the assignment, spins an ephemeral Actions environment, reads the page.</p>
         </div>
         <div class="step">
           <div class="step-num">4</div>
-          <h4>Learn MCP lookup</h4>
-          <p>Queries Microsoft Learn MCP for current product state; compares to the HTML's claims.</p>
+          <h4>Verify against Learn</h4>
+          <p>Checks current product state on Microsoft Learn (via MCP when configured, or web fetch) and compares to the page's claims.</p>
         </div>
         <div class="step">
           <div class="step-num">5</div>
           <h4>Draft PR</h4>
-          <p>If stale claims found, opens a <code>copilot/accuracy-review-*</code> branch with edits + rationale.</p>
+          <p>If stale claims found, opens a <code>copilot/accuracy-review-*</code> branch with edits + rationale. No auto-merge.</p>
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@
         </h3>
         <ul>
           <li><strong>Zero human effort per review cycle.</strong> The cron, the assignment, and the PR draft all happen without anyone on keyboard.</li>
-          <li><strong>Learn MCP is a first-party source.</strong> Not a general web search — a Microsoft-owned documentation surface that tracks renames, GA dates, deprecations.</li>
+          <li><strong>Microsoft Learn is a first-party source.</strong> Not general web search — a Microsoft-owned documentation surface that tracks renames, GA dates, deprecations.</li>
           <li><strong>Evidence stays in the repo.</strong> Every review run leaves an issue, a branch, and (if stale) a PR. The audit trail is <code>git log</code>.</li>
           <li><strong>Humans still approve.</strong> Nothing auto-merges. Every PR needs a reviewer to accept the fact-check.</li>
         </ul>
@@ -168,7 +168,7 @@
           What it doesn't do
         </h3>
         <ul>
-          <li><strong>Not free.</strong> ~300 lines of YAML + a PAT secret + Copilot Business seats + Actions minutes. Worth it here because it amortizes across every future page.</li>
+          <li><strong>Not free.</strong> Two workflows totalling ~700 lines of YAML + a PAT secret + Copilot seats + Actions minutes. Worth it here because it amortizes across every future page.</li>
           <li><strong>Not perfect.</strong> Copilot can miss subtle inaccuracies or flag false positives. Review quality still depends on the reviewer.</li>
           <li><strong>Not portable as-is.</strong> This pattern fits Microsoft-employee content about Microsoft products. Your mileage will vary for non-MS domains.</li>
           <li><strong>Not a substitute for SME review.</strong> A correctly-cited stale fact is still stale — Learn itself lags the live product in edge cases.</li>
@@ -189,9 +189,9 @@
     <div>
       <h4>Primary sources</h4>
       <ul class="sources-list">
-        <li><a href="https://github.com/SME-C-Infographics/sme-c-infographics.github.io/blob/main/.github/workflows/copilot-page-review.yml">copilot-page-review.yml</a></li>
-        <li><a href="https://github.com/SME-C-Infographics/sme-c-infographics.github.io/blob/main/.github/workflows/accuracy-review.yml">accuracy-review.yml</a></li>
-        <li><a href="https://learn.microsoft.com/en-us/training/support/mcp">Microsoft Learn MCP</a></li>
+        <li><a href="https://github.com/SME-C-Infographics/sme-c-infographics.github.io/blob/main/.github/workflows/accuracy-review.yml">accuracy-review.yml (weekly · Learn)</a></li>
+        <li><a href="https://github.com/SME-C-Infographics/sme-c-infographics.github.io/blob/main/.github/workflows/copilot-page-review.yml">copilot-page-review.yml (monthly · audit findings)</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/training/support/mcp">Microsoft Learn MCP server</a></li>
         <li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent">Copilot cloud agent docs</a></li>
       </ul>
     </div>

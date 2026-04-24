@@ -128,9 +128,9 @@
         <header><h3>Claude Code Action</h3><div class="sub">@claude-triggered workflow</div></header>
         <div class="loop-steps">
           <div class="loop-step"><div class="n">1</div><div class="t"><strong>Comment with <code>@claude</code>.</strong> Workflow fires on the event.</div></div>
-          <div class="loop-step"><div class="n">2</div><div class="t"><strong>Action runs on your runner.</strong> Progress tracked in the comment itself (checkboxes).</div></div>
-          <div class="loop-step"><div class="n">3</div><div class="t"><strong>New commit on the PR branch.</strong> Same PR, one Actions run per iteration.</div></div>
-          <div class="loop-step pain"><div class="n">!</div><div class="t"><strong>Each <code>@claude</code> = Actions minutes + API tokens.</strong> Chatty reviewers cost more.</div></div>
+          <div class="loop-step"><div class="n">2</div><div class="t"><strong>Action runs on your runner.</strong> Progress tracked in the comment itself (checkboxes that update live).</div></div>
+          <div class="loop-step"><div class="n">3</div><div class="t"><strong>New commit on the PR branch.</strong> Same PR, one Actions run per <code>@claude</code> trigger.</div></div>
+          <div class="loop-step pain"><div class="n">!</div><div class="t"><strong>Each <code>@claude</code> = Actions minutes + Anthropic API tokens.</strong> Chatty reviewers cost more.</div></div>
         </div>
       </div>
 
@@ -149,7 +149,7 @@
         <div class="loop-steps">
           <div class="loop-step"><div class="n">1</div><div class="t"><strong>Comment <code>@cursor</code> on the PR</strong> — or kick off a new run from Cursor web, Slack, Linear, or API.</div></div>
           <div class="loop-step"><div class="n">2</div><div class="t"><strong>Agent clones, modifies, pushes.</strong> Cloud VM with own tools, MCP, hooks.</div></div>
-          <div class="loop-step"><div class="n">3</div><div class="t"><strong>Optional: hand off to IDE.</strong> Same agent context available in Cursor Desktop.</div></div>
+          <div class="loop-step"><div class="n">3</div><div class="t"><strong>Optional: follow up from the IDE.</strong> Cursor Desktop can view and continue cloud-agent runs.</div></div>
           <div class="loop-step pain"><div class="n">!</div><div class="t"><strong>Run history in Cursor dashboard.</strong> PR shows outputs; reasoning lives in Cursor's UI.</div></div>
         </div>
       </div>
